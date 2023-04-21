@@ -2,9 +2,10 @@ import React from "react"
 import { View, ViewStyle } from "react-native"
 import { spacing } from "../../theme"
 import { Item } from "./Item"
+import { StepType } from "../../features/Onboarding/screens/WelcomeScreen"
 
 interface ProgressStepsProps {
-  steps: string[]
+  steps: Array<StepType>
   currentStep: number
 }
 
@@ -13,7 +14,7 @@ export function ProgressSteps(props: ProgressStepsProps) {
   return (
     <View style={$root}>
       {steps.map((step, index) => (
-        <Item key={step} isCurrent={index === currentStep} />
+        <Item key={step.id} isCurrent={index === currentStep} />
       ))}
     </View>
   )

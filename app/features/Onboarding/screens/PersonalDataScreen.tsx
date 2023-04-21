@@ -5,6 +5,7 @@ import { StackScreenProps } from "@react-navigation/stack"
 import { Button, Screen, Avatar, TextFieldForEdit } from "../../../components"
 import { colors, spacing } from "../../../theme"
 import { DateField } from "../../../components/DateField"
+import { OnboardingStackParamList } from "../navigation/OnboardingNavigator"
 
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../models"
@@ -18,8 +19,8 @@ import { DateField } from "../../../components/DateField"
 
 // REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
 // @ts-ignore
-export const PersonalData: FC<StackScreenProps<AppStackScreenProps, "Welcome">> = observer(
-  function PersonalData() {
+export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "PersonalData">> =
+  observer(function PersonalData() {
     // Pull in one of our MST stores
     // const { someStore, anotherStore } = useStores()
 
@@ -52,8 +53,7 @@ export const PersonalData: FC<StackScreenProps<AppStackScreenProps, "Welcome">> 
         </View>
       </Screen>
     )
-  },
-)
+  })
 
 const $root: ViewStyle = {
   flex: 1,

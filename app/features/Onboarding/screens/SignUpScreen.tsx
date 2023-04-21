@@ -4,6 +4,7 @@ import { ImageBackground, TextStyle, View, ViewStyle } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack"
 import { Screen, Text, GoogleButton, AppleButton } from "../../../components"
 import { colors, spacing } from "../../../theme"
+import { OnboardingStackParamList } from "../navigation/OnboardingNavigator"
 
 const signUpBackground = require("../../../../assets/images/onboarding/signup-background.png")
 
@@ -19,7 +20,7 @@ const signUpBackground = require("../../../../assets/images/onboarding/signup-ba
 
 // REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
 // @ts-ignore
-export const SignUpScreen: FC<StackScreenProps<AppStackScreenProps, "Welcome">> = observer(
+export const SignUpScreen: FC<StackScreenProps<OnboardingStackParamList, "SignUp">> = observer(
   function SignUpScreen() {
     // Pull in one of our MST stores
     // const { someStore, anotherStore } = useStores()

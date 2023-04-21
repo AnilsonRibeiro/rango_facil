@@ -1,7 +1,12 @@
 import React, { useEffect } from "react"
 import { ViewStyle } from "react-native"
-import { colors } from "../../theme"
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
+import { colors, timing } from "../../theme"
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated"
 
 interface ItemProps {
   isCurrent?: boolean
@@ -9,7 +14,6 @@ interface ItemProps {
 
 export function Item(props: ItemProps) {
   const { isCurrent } = props
-  console.log(isCurrent)
 
   const size = useSharedValue(8)
 
@@ -22,7 +26,7 @@ export function Item(props: ItemProps) {
 
   useEffect(() => {
     if (isCurrent) {
-      size.value = withTiming(64)
+      size.value = withTiming(64, { duration: timing.quick, easing: Easing.linear })
     } else {
       size.value = withTiming(8)
     }
