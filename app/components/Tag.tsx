@@ -1,23 +1,42 @@
-import React, { FC } from "react"
-import { View, ViewStyle } from "react-native"
+import React, { FC, useState } from "react"
+import { TextStyle, TouchableOpacity, ViewStyle } from "react-native"
 import { colors } from "../theme"
 import { Icon, IconTypes } from "./Icon"
+import { Text } from "./Text"
 
 type Preset = "default" | "medium" | "big"
 
 interface TagProps {
-  preset?: Preset
+  name: string
   icon: IconTypes
+  selected?: boolean
+  preset?: Preset
 }
 
-export const Tag: FC<TagProps> = ({ preset = "default", icon }) => {
-  const $viewStyle = [$root, $preset[preset]]
+export const Tag: FC<TagProps> = (props) => {
+  const [isSelected, setIsSelected] = useState<boolean>(() => selected ?? false)
+
+  const { icon, name, preset = "default", selected = false, ...rest } = props
 
   const iconSize = preset === "big" ? 80 : preset === "medium" ? 64 : 40
+
+  function $viewStyle(selected: boolean) {
+    return [$root, $preset[preset], selected && $rootSelected]
+  }
+
+  const handlePress = () => {
+    setIsSelected((s) => !s)
+  }
+
   return (
-    <View style={$viewStyle}>
-      <Icon icon={icon} size={iconSize} color={colors.palette.primary600} />
-    </View>
+    <TouchableOpacity style={$viewStyle(isSelected)} onPress={handlePress} {...rest}>
+      <Icon
+        icon={icon}
+        size={iconSize}
+        color={!isSelected ? colors.palette.primary600 : colors.palette["neutral100_12%"]}
+      />
+      {isSelected && <Text text={name} style={$title} preset="default" />}
+    </TouchableOpacity>
   )
 }
 
@@ -26,6 +45,8 @@ const $root: ViewStyle = {
   alignItems: "center",
   backgroundColor: colors.palette.neutral100,
   borderRadius: 9999,
+
+  position: "relative",
 }
 
 const $small: ViewStyle = {
@@ -41,8 +62,16 @@ const $medium: ViewStyle = {
 const $big: ViewStyle = {
   width: 96,
   height: 96,
-
   marginVertical: 35,
+}
+
+const $title: TextStyle = {
+  color: colors.palette.neutral100,
+  position: "absolute",
+}
+
+const $rootSelected: ViewStyle = {
+  backgroundColor: colors.palette.primary600,
 }
 
 const $preset = {

@@ -30,44 +30,51 @@ type TagType = {
 
 const tags: Array<TagType> = [
   {
-    id: "milho",
-    icon: "milho",
-    name: "Milho",
-    preset: "big",
-  },
-  {
-    id: "amendoin",
-    icon: "amendoin",
-    name: "Amendoim",
-    preset: "default",
-  },
-  {
     id: "cogumelo",
     icon: "cogumelo",
     name: "Cogumelo",
-    preset: "medium",
+    preset: "big",
   },
-  {
-    id: "crustacoes",
-    icon: "crustaceos",
-    name: "Crustáceos",
-    preset: "medium",
-  },
-
   {
     id: "feijao",
     icon: "feijao",
     name: "Feijão",
     preset: "default",
   },
+  {
+    id: "nozes",
+    icon: "nozes",
+    name: "Nozes",
+    preset: "medium",
+  },
 
   {
-    id: "gergilim",
-    icon: "gergilim",
-    name: "Gergirlim",
+    id: "milho",
+    icon: "milho",
+    name: "Milho",
+    preset: "medium",
+  },
+
+  {
+    id: "salsa",
+    icon: "salsa",
+    name: "Salsa",
     preset: "default",
   },
 
+  {
+    id: "ovos",
+    icon: "ovos",
+    name: "Ovos",
+    preset: "default",
+  },
+
+  {
+    id: "mariscos",
+    icon: "mariscos",
+    name: "Maricos",
+    preset: "medium",
+  },
   {
     id: "gluten",
     icon: "gluten",
@@ -76,16 +83,28 @@ const tags: Array<TagType> = [
   },
 
   {
-    id: "leite",
-    icon: "leite",
-    name: "Leite",
-    preset: "medium",
+    id: "peixe",
+    icon: "peixe",
+    name: "Peixe",
+    preset: "default",
   },
 
   {
-    id: "mariscos",
-    icon: "mariscos",
-    name: "Maricos",
+    id: "amendoin",
+    icon: "amendoin",
+    name: "Amendoim",
+    preset: "big",
+  },
+  {
+    id: "gergilim",
+    icon: "gergilim",
+    name: "Gergirlim",
+    preset: "medium",
+  },
+  {
+    id: "leite",
+    icon: "leite",
+    name: "Leite",
     preset: "default",
   },
 
@@ -104,44 +123,22 @@ const tags: Array<TagType> = [
   },
 
   {
-    id: "nozes",
-    icon: "nozes",
-    name: "Nozes",
-    preset: "medium",
-  },
-
-  {
-    id: "ovos",
-    icon: "ovos",
-    name: "Ovos",
-    preset: "default",
-  },
-
-  {
-    id: "peixe",
-    icon: "peixe",
-    name: "Peixe",
-    preset: "default",
-  },
-
-  {
-    id: "salsa",
-    icon: "salsa",
-    name: "Salsa",
-    preset: "medium",
-  },
-
-  {
     id: "soja",
     icon: "soja",
     name: "Soja",
-    preset: "medium",
+    preset: "default",
   },
 
   {
     id: "sulfato",
     icon: "sulfato",
     name: "Sulfato",
+    preset: "medium",
+  },
+  {
+    id: "crustacoes",
+    icon: "crustaceos",
+    name: "Crustáceos",
     preset: "big",
   },
 ]
