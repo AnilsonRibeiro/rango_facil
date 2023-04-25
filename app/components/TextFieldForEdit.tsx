@@ -50,6 +50,7 @@ const $root: ViewStyle = {
 }
 
 const $input: TextStyle = {
+  flex: 1,
   backgroundColor: colors.transparent,
   color: colors.palette.neutral100,
   fontSize: 18,

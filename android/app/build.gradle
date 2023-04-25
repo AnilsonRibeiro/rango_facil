@@ -1,5 +1,6 @@
 apply plugin: 'kotlin-android'
 apply plugin: "com.android.application"
+apply plugin: 'com.google.gms.google-services' // Firebase config
 
 import com.android.build.OutputFile
 import org.apache.tools.ant.taskdefs.condition.Os
@@ -214,10 +215,10 @@ android {
     }
     signingConfigs {
         debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+            storeFile file('developer-key.keystore')
+            storePassword 'developer'
+            keyAlias 'developer-key-alias'
+            keyPassword 'developer'
         }
     }
     buildTypes {
@@ -255,6 +256,7 @@ dependencies {
 
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0' // Firebase google auth config
 
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
     def isWebpEnabled = (findProperty('expo.webp.enabled') ?: "") == "true";
@@ -344,3 +346,5 @@ def isNewArchitectureEnabled() {
     // - Set an environment variable `ORG_GRADLE_PROJECT_newArchEnabled=true`
     return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
 }
+
+apply plugin: 'com.google.gms.google-services' // Firebase auth config

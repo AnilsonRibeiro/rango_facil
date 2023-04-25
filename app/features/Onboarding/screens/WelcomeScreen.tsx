@@ -1,7 +1,7 @@
 import React, { FC, memo, useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { ImageBackground, TextStyle, ViewStyle } from "react-native"
-import { StackScreenProps } from "@react-navigation/stack"
+import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack"
 import { Button, Screen, Text } from "../../../components"
 import { colors, spacing, timing } from "../../../theme"
 import { ProgressSteps } from "../../../components/ProgressSteps"
@@ -13,6 +13,7 @@ import Animated, {
   Easing,
 } from "react-native-reanimated"
 import { OnboardingStackParamList } from "../navigation/OnboardingNavigator"
+import { useNavigation } from "@react-navigation/native"
 
 const welcomeStepOne = require("../../../../assets/images/onboarding/welcome-background.png")
 const welcomeStepTwo = require("../../../../assets/images/onboarding/welcome-step-2-background.png")
@@ -76,16 +77,17 @@ const WelcomeDescription: FC<{ text: string }> = memo(
 )
 
 export const WelcomeScreen: FC<StackScreenProps<OnboardingStackParamList, "Welcome">> = observer(
-  function WelcomeScreen({ navigation }) {
+  function WelcomeScreen() {
     // Pull in one of our MST stores
     // const { someStore, anotherStore } = useStores()
 
     // Pull in navigation via hook
-
+    const navigation = useNavigation<StackNavigationProp<OnboardingStackParamList>>()
     const [currentStep, setCurrentStep] = useState(0)
+
     const handleNextStep = () => {
       if (currentStep === steps.length - 1) {
-        navigation.push("SignUp")
+        navigation.replace("SignUp")
         return
       }
       setCurrentStep(currentStep + 1)

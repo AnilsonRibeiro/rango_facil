@@ -1,10 +1,15 @@
 import React, { FC } from "react"
 import { observer } from "mobx-react-lite"
 import { ImageBackground, TextStyle, View, ViewStyle } from "react-native"
-import { StackScreenProps } from "@react-navigation/stack"
+import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack"
 import { Screen, Text, GoogleButton, AppleButton } from "../../../components"
 import { colors, spacing } from "../../../theme"
 import { OnboardingStackParamList } from "../navigation/OnboardingNavigator"
+
+import { useStores } from "../../../models"
+import { useNavigation } from "@react-navigation/native"
+
+import AmendoinIcon from "../../../../assets/icons/svgs/amendoin.svg"
 
 const signUpBackground = require("../../../../assets/images/onboarding/signup-background.png")
 
@@ -23,10 +28,17 @@ const signUpBackground = require("../../../../assets/images/onboarding/signup-ba
 export const SignUpScreen: FC<StackScreenProps<OnboardingStackParamList, "SignUp">> = observer(
   function SignUpScreen() {
     // Pull in one of our MST stores
-    // const { someStore, anotherStore } = useStores()
+    const { authenticationStore } = useStores()
 
     // Pull in navigation via hook
-    // const navigation = useNavigation()
+    const navigation = useNavigation<StackNavigationProp<OnboardingStackParamList>>()
+
+    const handleSignUp = async () => {
+      authenticationStore.signUp().then(() => {
+        navigation.replace("PersonalData")
+      })
+    }
+
     return (
       <ImageBackground source={signUpBackground} resizeMode="cover" style={$image}>
         <Screen
@@ -38,9 +50,11 @@ export const SignUpScreen: FC<StackScreenProps<OnboardingStackParamList, "SignUp
         >
           <Text preset="heading" text="Rango Fácil" style={[$title, $text]} />
 
-          <GoogleButton />
+          <AmendoinIcon />
+
+          <GoogleButton onPress={handleSignUp} />
           <View style={$space} />
-          <AppleButton />
+          <AppleButton onPress={() => console.log("Apple Button")} />
         </Screen>
       </ImageBackground>
     )

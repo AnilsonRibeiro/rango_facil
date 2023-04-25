@@ -1,11 +1,12 @@
 import React, { FC } from "react"
 import { observer } from "mobx-react-lite"
-import { View, ViewStyle } from "react-native"
+import { ScrollView, View, ViewStyle } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack"
-import { Button, Screen, Avatar, TextFieldForEdit } from "../../../components"
+import { Button, Screen, Avatar, TextFieldForEdit, Tag, IconTypes } from "../../../components"
 import { colors, spacing } from "../../../theme"
 import { DateField } from "../../../components/DateField"
 import { OnboardingStackParamList } from "../navigation/OnboardingNavigator"
+import { useStores } from "../../../models"
 
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../models"
@@ -19,13 +20,145 @@ import { OnboardingStackParamList } from "../navigation/OnboardingNavigator"
 
 // REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
 // @ts-ignore
+
+type TagType = {
+  id: string
+  icon: IconTypes
+  name: string
+  preset: "default" | "medium" | "big"
+}
+
+const tags: Array<TagType> = [
+  {
+    id: "milho",
+    icon: "milho",
+    name: "Milho",
+    preset: "big",
+  },
+  {
+    id: "amendoin",
+    icon: "amendoin",
+    name: "Amendoim",
+    preset: "default",
+  },
+  {
+    id: "cogumelo",
+    icon: "cogumelo",
+    name: "Cogumelo",
+    preset: "medium",
+  },
+  {
+    id: "crustacoes",
+    icon: "crustaceos",
+    name: "Crustáceos",
+    preset: "medium",
+  },
+
+  {
+    id: "feijao",
+    icon: "feijao",
+    name: "Feijão",
+    preset: "default",
+  },
+
+  {
+    id: "gergilim",
+    icon: "gergilim",
+    name: "Gergirlim",
+    preset: "default",
+  },
+
+  {
+    id: "gluten",
+    icon: "gluten",
+    name: "Glúten",
+    preset: "medium",
+  },
+
+  {
+    id: "leite",
+    icon: "leite",
+    name: "Leite",
+    preset: "medium",
+  },
+
+  {
+    id: "mariscos",
+    icon: "mariscos",
+    name: "Maricos",
+    preset: "default",
+  },
+
+  {
+    id: "mel",
+    icon: "mel",
+    name: "Mel",
+    preset: "default",
+  },
+
+  {
+    id: "mostarda",
+    icon: "mostarda",
+    name: "Mostarda",
+    preset: "medium",
+  },
+
+  {
+    id: "nozes",
+    icon: "nozes",
+    name: "Nozes",
+    preset: "medium",
+  },
+
+  {
+    id: "ovos",
+    icon: "ovos",
+    name: "Ovos",
+    preset: "default",
+  },
+
+  {
+    id: "peixe",
+    icon: "peixe",
+    name: "Peixe",
+    preset: "default",
+  },
+
+  {
+    id: "salsa",
+    icon: "salsa",
+    name: "Salsa",
+    preset: "medium",
+  },
+
+  {
+    id: "soja",
+    icon: "soja",
+    name: "Soja",
+    preset: "medium",
+  },
+
+  {
+    id: "sulfato",
+    icon: "sulfato",
+    name: "Sulfato",
+    preset: "big",
+  },
+]
+
 export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "PersonalData">> =
   observer(function PersonalData() {
     // Pull in one of our MST stores
-    // const { someStore, anotherStore } = useStores()
+    const { authenticationStore } = useStores()
 
     // Pull in navigation via hook
     // const navigation = useNavigation()
+
+    const avatar = authenticationStore.user.photo
+    const name = authenticationStore.user.fullName
+    const dateOfBirth = authenticationStore.user.dateOfBirth
+    const onChangeDate = authenticationStore.user.setDateOfBirth
+
     return (
       <Screen
         style={$root}
@@ -41,13 +174,25 @@ export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "Person
 
         <View style={$content}>
           <View style={$wrapperAvatar}>
-            <Avatar />
+            <Avatar source={{ uri: avatar }} />
             <View style={$wrapperFields}>
-              <TextFieldForEdit placeholder="Nome sobrenome" />
-              <DateField />
+              <TextFieldForEdit value={name} placeholder="Nome sobrenome" />
+              <DateField value={dateOfBirth} onChange={onChangeDate} />
             </View>
           </View>
+
+          <ScrollView
+            style={$tags}
+            showsHorizontalScrollIndicator={false}
+            horizontal
+            contentContainerStyle={$containerTags}
+          >
+            {tags.map((item) => (
+              <Tag key={item.id} {...item} />
+            ))}
+          </ScrollView>
         </View>
+
         <View style={$wrapperButton}>
           <Button text="Continuar" />
         </View>
@@ -81,13 +226,14 @@ const $progressCell: ViewStyle = {
 
 const $content: ViewStyle = {
   flex: 1,
-  padding: spacing.large,
+
   justifyContent: "flex-start",
   paddingTop: "35%",
 }
 
 const $wrapperAvatar: ViewStyle = {
   flexDirection: "row",
+  paddingHorizontal: spacing.large,
 }
 
 const $wrapperFields: ViewStyle = {
@@ -97,4 +243,18 @@ const $wrapperFields: ViewStyle = {
 
 const $wrapperButton: ViewStyle = {
   paddingHorizontal: spacing.large,
+}
+
+const $containerTags: ViewStyle = {
+  alignItems: "center",
+  justifyContent: "space-evenly",
+  flexDirection: "column",
+  flexWrap: "wrap",
+}
+
+const $tags: ViewStyle = {
+  flex: 1,
+  maxHeight: 166,
+  height: 166,
+  marginTop: 24,
 }

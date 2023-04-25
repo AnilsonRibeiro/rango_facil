@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "984868387038",
+    "project_id": "rango-facil-renan-loureiro",
+    "storage_bucket": "rango-facil-renan-loureiro.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:984868387038:android:a40856bdd51f88dffc6a4f",
+        "android_client_info": {
+          "package_name": "com.rango_facil"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "984868387038-vsnmcafjp08j6tv9ilurvpg66e3ork81.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaFyIGKAtul0em0LDIBIRrph11pH-G9tM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "984868387038-vsnmcafjp08j6tv9ilurvpg66e3ork81.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,53 +1,59 @@
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
+import { User, UserModel } from "./User"
+import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-signin"
 
 export const AuthenticationStoreModel = types
   .model("AuthenticationStore")
   .props({
-    authToken: types.maybe(types.string),
-    authEmail: "",
-    authPassword: "",
+    user: types.maybeNull(UserModel),
   })
   .views((store) => ({
     get isAuthenticated() {
-      return !!store.authToken
-    },
-    get validationErrors() {
-      return {
-        authEmail: (function () {
-          if (store.authEmail.length === 0) return "can't be blank"
-          if (store.authEmail.length < 6) return "must be at least 6 characters"
-          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(store.authEmail))
-            return "must be a valid email address"
-          return ""
-        })(),
-        authPassword: (function () {
-          if (store.authPassword.length === 0) return "can't be blank"
-          if (store.authPassword.length < 6) return "must be at least 6 characters"
-          return ""
-        })(),
-      }
+      return !!store.user.token
     },
   }))
-  .actions((store) => ({
-    setAuthToken(value?: string) {
-      store.authToken = value
+  .actions((self) => ({
+    setUser(user: User) {
+      self.user = user
     },
-    setAuthEmail(value: string) {
-      store.authEmail = value.replace(/ /g, "")
-    },
-    setAuthPassword(value: string) {
-      store.authPassword = value.replace(/ /g, "")
-    },
+  }))
+  .actions((self) => ({
     logout() {
-      store.authToken = undefined
-      store.authEmail = ""
-      store.authPassword = ""
+      self.user = null
+    },
+
+    async signUp() {
+      try {
+        await GoogleSignin.hasPlayServices()
+        const userInfo = await GoogleSignin.signIn()
+        const user = UserModel.create({
+          id: userInfo.user.id,
+          name: userInfo.user.name,
+          email: userInfo.user.email,
+          avatar: userInfo.user.photo,
+          token: userInfo.idToken,
+          refreshToken: userInfo.serverAuthCode,
+        })
+
+        self.setUser(user)
+      } catch (error) {
+        console.log(error)
+        if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+          // user cancelled the login flow
+        } else if (error.code === statusCodes.IN_PROGRESS) {
+          // operation (e.g. sign in) is in progress already
+        } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+          // play services not available or outdated
+        } else {
+          // some other error happened
+        }
+      }
     },
   }))
   .preProcessSnapshot((snapshot) => {
     // remove sensitive data from snapshot to avoid secrets
     // being stored in AsyncStorage in plain text if backing up store
-    const { authToken, authPassword, ...rest } = snapshot // eslint-disable-line @typescript-eslint/no-unused-vars
+    const { ...rest } = snapshot // eslint-disable-line @typescript-eslint/no-unused-vars
 
     // see the following for strategies to consider storing secrets on device
     // https://reactnative.dev/docs/security#storing-sensitive-info
@@ -57,5 +63,3 @@ export const AuthenticationStoreModel = types
 
 export interface AuthenticationStore extends Instance<typeof AuthenticationStoreModel> {}
 export interface AuthenticationStoreSnapshot extends SnapshotOut<typeof AuthenticationStoreModel> {}
-
-// @demo remove-file

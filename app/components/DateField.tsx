@@ -1,21 +1,28 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { TextStyle, View, ViewStyle } from "react-native"
-import DatePicker, { DatePickerProps } from "react-native-date-picker"
+import DatePicker from "react-native-date-picker"
 
 import { Icon } from "./Icon"
 import { colors, spacing } from "../theme"
 import { Text } from "./Text"
 
-export type DateFieldProps = {}
+export type DateFieldProps = {
+  value?: Date
+  onChange?: (date: Date) => void
+}
 
 export function DateField(props: DateFieldProps) {
-  const { ...rest } = props
-  const [date, setDate] = useState<Date>(new Date())
+  const { value, onChange, ...rest } = props
+  const [date, setDate] = useState<Date>(() => value ?? new Date())
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const handleOpen = () => {
     setIsOpen(true)
   }
+
+  useEffect(() => {
+    onChange?.(date)
+  }, [date])
 
   const dateFormatted = date.toLocaleDateString("pt-BR")
   return (
@@ -50,6 +57,7 @@ const $root: ViewStyle = {
 }
 
 const $text: TextStyle = {
+  flex: 1,
   backgroundColor: colors.transparent,
   color: colors.palette.neutral100,
   fontSize: 18,

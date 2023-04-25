@@ -4,7 +4,7 @@
   "expo": {
     "name": "rango_facil",
     "slug": "rango_facil",
-    "scheme": "rango_facil",
+    "scheme": "rangofacil",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/app-icon-all.png",
@@ -29,18 +29,20 @@
         "image": "./assets/images/splash-logo-android-universal.png",
         "resizeMode": "contain",
         "backgroundColor": "#001A0D"
-      }
+      },
+      "googleServicesFile": "./google-services.json"
     },
     "ios": {
       "icon": "./assets/images/app-icon-ios.png",
       "supportsTablet": true,
-      "bundleIdentifier": "com.rango_facil",
+      "bundleIdentifier": "com.rango-facil",
       "splash": {
         "image": "./assets/images/splash-logo-ios-mobile.png",
         "tabletImage": "./assets/images/splash-logo-ios-tablet.png",
         "resizeMode": "contain",
         "backgroundColor": "#001A0D"
-      }
+      },
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "web": {
       "favicon": "./assets/images/app-icon-web-favicon.png",
@@ -49,6 +51,7 @@
         "resizeMode": "contain",
         "backgroundColor": "#001A0D"
       }
-    }
+    },
+    "plugins": ["@react-native-google-signin/google-signin"]
   }
 }
