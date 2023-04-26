@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react"
 import { TextStyle, TouchableOpacity, ViewStyle } from "react-native"
-import { colors } from "../theme"
+import { colors, spacing } from "../theme"
 import { Icon, IconTypes } from "./Icon"
 import { Text } from "./Text"
 
@@ -8,9 +8,11 @@ type Preset = "default" | "medium" | "big"
 
 interface TagProps {
   name: string
-  icon: IconTypes
+  icon?: IconTypes
   selected?: boolean
   preset?: Preset
+
+  variant?: "default" | "rectangular"
 }
 
 export const Tag: FC<TagProps> = (props) => {
@@ -26,6 +28,14 @@ export const Tag: FC<TagProps> = (props) => {
 
   const handlePress = () => {
     setIsSelected((s) => !s)
+  }
+
+  if (props.variant === "rectangular") {
+    return (
+      <TouchableOpacity style={$rootRectangular} onPress={handlePress} {...rest}>
+        <Text text={name} style={$titleRectangular} preset="default" />
+      </TouchableOpacity>
+    )
   }
 
   return (
@@ -45,8 +55,17 @@ const $root: ViewStyle = {
   alignItems: "center",
   backgroundColor: colors.palette.neutral100,
   borderRadius: 9999,
-
   position: "relative",
+}
+
+const $rootRectangular: ViewStyle = {
+  justifyContent: "center",
+  alignItems: "center",
+  borderWidth: 1,
+  borderColor: colors.palette.neutral100,
+  borderRadius: 4,
+  paddingHorizontal: spacing.medium,
+  paddingVertical: spacing.extraSmall,
 }
 
 const $small: ViewStyle = {
@@ -68,6 +87,11 @@ const $big: ViewStyle = {
 const $title: TextStyle = {
   color: colors.palette.neutral100,
   position: "absolute",
+}
+
+const $titleRectangular: TextStyle = {
+  color: colors.palette.neutral100,
+  fontWeight: "500",
 }
 
 const $rootSelected: ViewStyle = {

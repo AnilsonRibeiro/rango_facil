@@ -203,7 +203,7 @@ export function Screen(props: ScreenProps) {
   return (
     <LinearGradient
       // Background Linear Gradient
-      colors={["rgba(0,0,0,0.5)", "rgba(0,0,0,0.5)"]}
+      colors={["rgba(0,0,0,0.5)", "transparent"]}
       style={[$containerStyle, { backgroundColor }, $containerInsets]}
     >
       <StatusBar style={statusBarStyle} {...StatusBarProps} />

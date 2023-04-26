@@ -1,7 +1,15 @@
-import React, { FC } from "react"
+import React, { FC, useEffect } from "react"
 import { TagType } from "../constants/tags"
-import { ScrollView, ViewStyle } from "react-native"
+import { ViewStyle, useWindowDimensions } from "react-native"
 import { Tag } from "../../../components"
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated"
+import { timing } from "../../../theme"
+import { delay } from "../../../utils/delay"
 
 interface TagsProps {
   data: Array<TagType>
@@ -10,9 +18,28 @@ interface TagsProps {
 export const Tags: FC<TagsProps> = (props) => {
   const { data } = props
 
+  const window = useWindowDimensions()
+
+  const INITIAL_POSITION = window.height / 2 - 166 / 2
+
+  const position = useSharedValue(INITIAL_POSITION)
+
+  const animatedPosition = useAnimatedStyle(() => {
+    return {
+      opacity: position.value === INITIAL_POSITION ? 0 : 1,
+      transform: [{ translateY: position.value }],
+    }
+  })
+
+  useEffect(() => {
+    delay(100).then(
+      () => (position.value = withTiming(0, { duration: timing.quick, easing: Easing.linear })),
+    )
+  }, [])
+
   return (
-    <ScrollView
-      style={$tags}
+    <Animated.ScrollView
+      style={[$tags, animatedPosition]}
       showsHorizontalScrollIndicator={false}
       horizontal
       contentContainerStyle={$containerTags}
@@ -20,7 +47,7 @@ export const Tags: FC<TagsProps> = (props) => {
       {data.map((item) => (
         <Tag key={item.id} {...item} />
       ))}
-    </ScrollView>
+    </Animated.ScrollView>
   )
 }
 

@@ -102,18 +102,19 @@ export const tags: Array<TagType> = [
   },
 
   {
+    id: "sulfato",
+    icon: "sulfato",
+    name: "Sulfato",
+    preset: "medium",
+  },
+
+  {
     id: "soja",
     icon: "soja",
     name: "Soja",
     preset: "default",
   },
 
-  {
-    id: "sulfato",
-    icon: "sulfato",
-    name: "Sulfato",
-    preset: "medium",
-  },
   {
     id: "crustacoes",
     icon: "crustaceos",
