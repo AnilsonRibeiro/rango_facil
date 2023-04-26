@@ -2,9 +2,9 @@ import { IconTypes } from "../../../components"
 
 export type TagType = {
   id: string
-  icon: IconTypes
+  icon?: IconTypes
   name: string
-  preset: "default" | "medium" | "big"
+  preset?: "default" | "medium" | "big"
 }
 
 export const tags: Array<TagType> = [
@@ -120,5 +120,37 @@ export const tags: Array<TagType> = [
     icon: "crustaceos",
     name: "Crustáceos",
     preset: "big",
+  },
+]
+
+export const categories: Array<Pick<TagType, "id" | "name">> = [
+  {
+    id: "1",
+    name: "Vegan",
+  },
+
+  {
+    id: "2",
+    name: "Vegetariano",
+  },
+
+  {
+    id: "3",
+    name: "Sem glúten",
+  },
+
+  {
+    id: "4",
+    name: "Sem acuçar",
+  },
+
+  {
+    id: "5",
+    name: "Carnivoro",
+  },
+
+  {
+    id: "6",
+    name: "Pescetariano",
   },
 ]

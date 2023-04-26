@@ -6,7 +6,7 @@ import { Text } from "./Text"
 
 type Preset = "default" | "medium" | "big"
 
-interface TagProps {
+export interface TagProps {
   name: string
   icon?: IconTypes
   selected?: boolean
@@ -23,7 +23,9 @@ export const Tag: FC<TagProps> = (props) => {
   const iconSize = preset === "big" ? 80 : preset === "medium" ? 64 : 40
 
   function $viewStyle(selected: boolean) {
-    return [$root, $preset[preset], selected && $rootSelected]
+    return props.variant === "default"
+      ? [$root, $preset[preset], selected && $rootSelected]
+      : [$rootRectangular, selected && $rootRectangularSelect]
   }
 
   const handlePress = () => {
@@ -32,7 +34,7 @@ export const Tag: FC<TagProps> = (props) => {
 
   if (props.variant === "rectangular") {
     return (
-      <TouchableOpacity style={$rootRectangular} onPress={handlePress} {...rest}>
+      <TouchableOpacity style={$viewStyle(isSelected)} onPress={handlePress} {...rest}>
         <Text text={name} style={$titleRectangular} preset="default" />
       </TouchableOpacity>
     )
@@ -66,6 +68,8 @@ const $rootRectangular: ViewStyle = {
   borderRadius: 4,
   paddingHorizontal: spacing.medium,
   paddingVertical: spacing.extraSmall,
+  marginBottom: spacing.small,
+  marginRight: spacing.small,
 }
 
 const $small: ViewStyle = {
@@ -95,6 +99,10 @@ const $titleRectangular: TextStyle = {
 }
 
 const $rootSelected: ViewStyle = {
+  backgroundColor: colors.palette.primary600,
+}
+
+const $rootRectangularSelect: ViewStyle = {
   backgroundColor: colors.palette.primary600,
 }
 

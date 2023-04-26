@@ -1,14 +1,14 @@
-import React, { FC, useReducer, useState } from "react"
+import React, { FC, useEffect, useReducer, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { LayoutChangeEvent, ScrollView, View, ViewStyle } from "react-native"
+import { LayoutChangeEvent, View, ViewStyle } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack"
-import { Button, Screen, Avatar, TextFieldForEdit, Text, Tag } from "../../../components"
+import { Button, Screen, Avatar, TextFieldForEdit, Text } from "../../../components"
 import { colors, spacing } from "../../../theme"
 import { DateField } from "../../../components/DateField"
 import { OnboardingStackParamList } from "../navigation/OnboardingNavigator"
 import { useStores } from "../../../models"
 import { Tags } from "../components/Tags"
-import { tags as data } from "../constants/tags"
+import { tags as data, categories } from "../constants/tags"
 
 import { Progress, StepType } from "../components/Progress"
 
@@ -37,6 +37,7 @@ type ActionsType = {
 export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "PersonalData">> =
   observer(function PersonalData() {
     const [width, setWidth] = useState<number>(0)
+    const [widthPerfilAlimentar, setWidthPerfilAlimentar] = useState<number>(0)
 
     const completedStepReduce = (
       state: { steps: StepType[]; currentStep: number },
@@ -48,12 +49,12 @@ export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "Person
         case ActionsEnum.COMPLETED_STEP:
           return {
             steps: state.steps.map((step, index) => {
-              if (index === payload) {
+              if (index === payload - 1) {
                 return { ...step, completed: true }
               }
               return step
             }),
-            currentStep: payload + 1,
+            currentStep: payload,
           }
       }
     }
@@ -95,13 +96,24 @@ export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "Person
     const dateOfBirth = authenticationStore.user.dateOfBirth
     const onChangeDate = authenticationStore.user.setDateOfBirth
 
-    const handleCompletedStep = (index: number) => {
-      dispatch({ type: ActionsEnum.COMPLETED_STEP, payload: index })
+    const handleCompletedStep = () => {
+      dispatch({ type: ActionsEnum.COMPLETED_STEP, payload: state.currentStep + 1 })
     }
 
-    const getWidth = (e: LayoutChangeEvent) => {
-      setWidth(e.nativeEvent.layout.width)
+    const getWidth = (e: LayoutChangeEvent, locale: "default" | "perfilAlimentar") => {
+      if (locale === "default") {
+        setWidth(e.nativeEvent.layout.width)
+      } else {
+        setWidthPerfilAlimentar(e.nativeEvent.layout.width)
+      }
     }
+
+    useEffect(() => {
+      console.log(state.steps)
+    }, [state])
+
+    const showTags = state.steps[0].completed
+    const showCategories = state.steps[1].completed
 
     return (
       <Screen
@@ -120,26 +132,35 @@ export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "Person
               <DateField value={dateOfBirth} onChange={onChangeDate} />
             </View>
           </View>
-          {state.currentStep === 1 && <Tags data={data} />}
+          {showTags && (
+            <Tags
+              data={data}
+              headerComponent={
+                <View style={$headerTags} onLayout={(e) => getWidth(e, "default")}>
+                  <Text text="Alergias:" preset="subheading" />
+                  <View style={$viewStyle(width)} />
+                </View>
+              }
+              scrollStyle={$overrideScrollViewStyleTags}
+            />
+          )}
 
-          <View style={$wrapperTags} onLayout={getWidth}>
-            <Text text="Perfil alimentar:" preset="subheading" />
-            <View style={$viewStyle(width)} />
-          </View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={$wrapperCategories}
-          >
-            <Tag variant="rectangular" name="Vegano" />
-            <Tag variant="rectangular" name="Carnívoro" />
-            <Tag variant="rectangular" name="Sem açúcar" />
-            <Tag variant="rectangular" name="Cetogênica" />
-          </ScrollView>
+          {showCategories && (
+            <Tags
+              data={categories}
+              variant="rectangular"
+              scrollStyle={$overrideScrollViewStyleCategories}
+              headerComponent={
+                <View style={$headerTags} onLayout={(e) => getWidth(e, "perfilAlimentar")}>
+                  <Text text="Perfil alimentar:" preset="subheading" />
+                  <View style={$viewStyle(widthPerfilAlimentar)} />
+                </View>
+              }
+            />
+          )}
         </View>
-
         <View style={$wrapperButton}>
-          <Button text="Continuar" onPress={() => handleCompletedStep(0)} />
+          <Button text="Continuar" onPress={handleCompletedStep} />
         </View>
       </Screen>
     )
@@ -159,11 +180,11 @@ const $content: ViewStyle = {
 
   justifyContent: "flex-start",
   paddingTop: "35%",
+  paddingHorizontal: spacing.large,
 }
 
 const $wrapperAvatar: ViewStyle = {
   flexDirection: "row",
-  paddingHorizontal: spacing.large,
 }
 
 const $wrapperFields: ViewStyle = {
@@ -175,14 +196,18 @@ const $wrapperButton: ViewStyle = {
   paddingHorizontal: spacing.large,
 }
 
-const $wrapperTags: ViewStyle = {
-  marginHorizontal: spacing.large,
+const $headerTags: ViewStyle = {
+  alignSelf: "flex-start",
 }
 
-const $wrapperCategories: ViewStyle = {
+const $overrideScrollViewStyleCategories: ViewStyle = {
+  height: 70,
+  marginTop: spacing.huge,
+}
+
+const $overrideScrollViewStyleTags: ViewStyle = {
+  minHeight: 170,
+  height: 170,
+
   marginTop: spacing.large,
-  flexWrap: "wrap",
-  flexDirection: "column",
-  alignItems: "flex-start",
-  justifyContent: "flex-start",
 }

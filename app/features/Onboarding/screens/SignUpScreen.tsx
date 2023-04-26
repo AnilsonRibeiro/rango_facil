@@ -9,8 +9,6 @@ import { OnboardingStackParamList } from "../navigation/OnboardingNavigator"
 import { useStores } from "../../../models"
 import { useNavigation } from "@react-navigation/native"
 
-import AmendoinIcon from "../../../../assets/icons/svgs/amendoin.svg"
-
 const signUpBackground = require("../../../../assets/images/onboarding/signup-background.png")
 
 // import { useNavigation } from "@react-navigation/native"
@@ -49,8 +47,6 @@ export const SignUpScreen: FC<StackScreenProps<OnboardingStackParamList, "SignUp
           safeAreaEdges={["end"]}
         >
           <Text preset="heading" text="Rango Fácil" style={[$title, $text]} />
-
-          <AmendoinIcon />
 
           <GoogleButton onPress={handleSignUp} />
           <View style={$space} />

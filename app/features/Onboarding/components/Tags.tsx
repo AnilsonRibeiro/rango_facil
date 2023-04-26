@@ -1,6 +1,6 @@
 import React, { FC, useEffect } from "react"
 import { TagType } from "../constants/tags"
-import { ViewStyle, useWindowDimensions } from "react-native"
+import { ScrollView, StyleProp, ViewStyle, useWindowDimensions } from "react-native"
 import { Tag } from "../../../components"
 import Animated, {
   Easing,
@@ -13,10 +13,15 @@ import { delay } from "../../../utils/delay"
 
 interface TagsProps {
   data: Array<TagType>
+  headerComponent?: React.ReactNode
+
+  scrollStyle?: ViewStyle
+
+  variant?: "default" | "rectangular"
 }
 
 export const Tags: FC<TagsProps> = (props) => {
-  const { data } = props
+  const { data, headerComponent, variant = "default", scrollStyle, ...rest } = props
 
   const window = useWindowDimensions()
 
@@ -31,6 +36,8 @@ export const Tags: FC<TagsProps> = (props) => {
     }
   })
 
+  const $viewStyle = [$tags, animatedPosition, scrollStyle] as StyleProp<ViewStyle>
+
   useEffect(() => {
     delay(100).then(
       () => (position.value = withTiming(0, { duration: timing.quick, easing: Easing.linear })),
@@ -38,16 +45,19 @@ export const Tags: FC<TagsProps> = (props) => {
   }, [])
 
   return (
-    <Animated.ScrollView
-      style={[$tags, animatedPosition]}
-      showsHorizontalScrollIndicator={false}
-      horizontal
-      contentContainerStyle={$containerTags}
-    >
-      {data.map((item) => (
-        <Tag key={item.id} {...item} />
-      ))}
-    </Animated.ScrollView>
+    <Animated.View style={$viewStyle}>
+      {headerComponent && headerComponent}
+      <ScrollView
+        style={$content}
+        showsHorizontalScrollIndicator={false}
+        horizontal
+        contentContainerStyle={$containerTags}
+      >
+        {data.map((item) => (
+          <Tag key={item.id} variant={variant} {...item} {...rest} />
+        ))}
+      </ScrollView>
+    </Animated.View>
   )
 }
 
@@ -58,9 +68,11 @@ const $containerTags: ViewStyle = {
   flexWrap: "wrap",
 }
 
+const $content: ViewStyle = {
+  minHeight: "100%",
+}
+
 const $tags: ViewStyle = {
-  flex: 1,
   maxHeight: 166,
   height: 166,
-  marginTop: 24,
 }
