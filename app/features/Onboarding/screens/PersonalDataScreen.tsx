@@ -2,13 +2,13 @@ import React, { FC, useEffect, useReducer, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { LayoutChangeEvent, View, ViewStyle } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack"
-import { Button, Screen, Avatar, TextFieldForEdit, Text } from "../../../components"
+import { Button, Screen, Avatar, TextFieldForEdit, Text, DateField } from "../../../components"
 import { colors, spacing } from "../../../theme"
-import { DateField } from "../../../components/DateField"
-import { OnboardingStackParamList } from "../navigation/OnboardingNavigator"
-import { useStores } from "../../../models"
+
+import { OnboardingStackParamList } from "app/features/Onboarding/navigation/OnboardingNavigator"
+import { Food, FoodOption, useStores } from "../../../models"
 import { Tags } from "../components/Tags"
-import { tags as data, categories } from "../constants/tags"
+import { tags as data, categories, TagType } from "../constants/tags"
 
 import { Progress, StepType } from "../components/Progress"
 
@@ -88,9 +88,6 @@ export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "Person
     // Pull in one of our MST stores
     const { authenticationStore } = useStores()
 
-    // Pull in navigation via hook
-    // const navigation = useNavigation()
-
     const avatar = authenticationStore.user.photo
     const name = authenticationStore.user.fullName
     const dateOfBirth = authenticationStore.user.dateOfBirth
@@ -106,6 +103,48 @@ export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "Person
       } else {
         setWidthPerfilAlimentar(e.nativeEvent.layout.width)
       }
+    }
+
+    const handlePressFoodTag = (item: TagType) => {
+      const exists = authenticationStore.user.existsFood(item.id)
+
+      if (exists) {
+        authenticationStore.user.removeFood(item.id)
+      } else {
+        authenticationStore.user.addFood({
+          id: item.id,
+          name: item.name,
+        } as Food)
+      }
+    }
+
+    const handlePressFoodOption = (item: TagType) => {
+      const exists = authenticationStore.user.existsFoodOption(item.id)
+
+      if (exists) {
+        authenticationStore.user.removeFoodOption(item.id)
+      } else {
+        authenticationStore.user.addFoodOption({
+          id: item.id,
+          name: item.name,
+        } as FoodOption)
+      }
+    }
+
+    const handleCreateAccount = async () => {
+      try {
+        await authenticationStore.user.createAccount()
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    const isSelectFood = (id: string): boolean => {
+      return !!authenticationStore.user.existsFood(id)
+    }
+
+    const isSelectFoodOption = (id: string): boolean => {
+      return !!authenticationStore.user.existsFoodOption(id)
     }
 
     useEffect(() => {
@@ -135,6 +174,8 @@ export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "Person
           {showTags && (
             <Tags
               data={data}
+              isSelect={isSelectFood}
+              onPressTag={handlePressFoodTag}
               headerComponent={
                 <View style={$headerTags} onLayout={(e) => getWidth(e, "default")}>
                   <Text text="Alergias:" preset="subheading" />
@@ -148,6 +189,8 @@ export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "Person
           {showCategories && (
             <Tags
               data={categories}
+              isSelect={isSelectFoodOption}
+              onPressTag={handlePressFoodOption}
               variant="rectangular"
               scrollStyle={$overrideScrollViewStyleCategories}
               headerComponent={
@@ -160,7 +203,11 @@ export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "Person
           )}
         </View>
         <View style={$wrapperButton}>
-          <Button text="Continuar" onPress={handleCompletedStep} />
+          <Button
+            text="Continuar"
+            onPress={state.currentStep === 2 ? handleCreateAccount : handleCompletedStep}
+            disabled={authenticationStore.user.loading}
+          />
         </View>
       </Screen>
     )

@@ -1,12 +1,12 @@
 import React, { FC, useState } from "react"
-import { TextStyle, TouchableOpacity, ViewStyle } from "react-native"
+import { TextStyle, TouchableOpacity, TouchableOpacityProps, ViewStyle } from "react-native"
 import { colors, spacing } from "../theme"
 import { Icon, IconTypes } from "./Icon"
 import { Text } from "./Text"
 
 type Preset = "default" | "medium" | "big"
 
-export interface TagProps {
+export interface TagProps extends TouchableOpacityProps {
   name: string
   icon?: IconTypes
   selected?: boolean
@@ -16,9 +16,9 @@ export interface TagProps {
 }
 
 export const Tag: FC<TagProps> = (props) => {
-  const [isSelected, setIsSelected] = useState<boolean>(() => selected ?? false)
+  const { icon, name, preset = "default", selected = false, onPress, ...rest } = props
 
-  const { icon, name, preset = "default", selected = false, ...rest } = props
+  const [isSelected, setIsSelected] = useState<boolean>(() => selected ?? false)
 
   const iconSize = preset === "big" ? 80 : preset === "medium" ? 64 : 40
 
@@ -34,14 +34,28 @@ export const Tag: FC<TagProps> = (props) => {
 
   if (props.variant === "rectangular") {
     return (
-      <TouchableOpacity style={$viewStyle(isSelected)} onPress={handlePress} {...rest}>
+      <TouchableOpacity
+        style={$viewStyle(isSelected)}
+        {...rest}
+        onPress={(e) => {
+          handlePress()
+          onPress && onPress(e)
+        }}
+      >
         <Text text={name} style={$titleRectangular} preset="default" />
       </TouchableOpacity>
     )
   }
 
   return (
-    <TouchableOpacity style={$viewStyle(isSelected)} onPress={handlePress} {...rest}>
+    <TouchableOpacity
+      style={$viewStyle(isSelected)}
+      {...rest}
+      onPress={(e) => {
+        handlePress()
+        onPress && onPress(e)
+      }}
+    >
       <Icon
         icon={icon}
         size={iconSize}

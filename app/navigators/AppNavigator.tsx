@@ -13,10 +13,7 @@ import Config from "../config"
 
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 
-import {
-  OnboardingStack,
-  OnboardingStackParamList,
-} from "../features/Onboarding/navigation/OnboardingNavigator"
+import { MainStack, MainStackParamList } from "./MainNavigator"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -38,8 +35,8 @@ import {
  */
 const exitRoutes = Config.exitRoutes
 
-export type AppStackScreenProps<T extends keyof OnboardingStackParamList> = StackScreenProps<
-  OnboardingStackParamList,
+export type AppStackScreenProps<T extends keyof MainStackParamList> = StackScreenProps<
+  MainStackParamList,
   T
 >
 
@@ -56,7 +53,7 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
       theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
       {...props}
     >
-      <OnboardingStack />
+      <MainStack />
     </NavigationContainer>
   )
 })

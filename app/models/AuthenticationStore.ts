@@ -9,7 +9,7 @@ export const AuthenticationStoreModel = types
   })
   .views((store) => ({
     get isAuthenticated() {
-      return !!store.user.token
+      return !!store.user?.token
     },
   }))
   .actions((self) => ({

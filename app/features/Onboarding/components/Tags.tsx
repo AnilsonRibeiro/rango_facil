@@ -11,17 +11,28 @@ import Animated, {
 import { timing } from "../../../theme"
 import { delay } from "../../../utils/delay"
 
+import { observer } from "mobx-react-lite"
+
 interface TagsProps {
   data: Array<TagType>
   headerComponent?: React.ReactNode
-
+  onPressTag?: (item: TagType) => void
+  isSelect?: (id: string) => boolean
   scrollStyle?: ViewStyle
 
   variant?: "default" | "rectangular"
 }
 
-export const Tags: FC<TagsProps> = (props) => {
-  const { data, headerComponent, variant = "default", scrollStyle, ...rest } = props
+export const Tags: FC<TagsProps> = observer(function Tags(props) {
+  const {
+    data,
+    headerComponent,
+    variant = "default",
+    scrollStyle,
+    onPressTag,
+    isSelect,
+    ...rest
+  } = props
 
   const window = useWindowDimensions()
 
@@ -54,12 +65,19 @@ export const Tags: FC<TagsProps> = (props) => {
         contentContainerStyle={$containerTags}
       >
         {data.map((item) => (
-          <Tag key={item.id} variant={variant} {...item} {...rest} />
+          <Tag
+            key={item.id}
+            variant={variant}
+            onPress={() => onPressTag(item)}
+            selected={isSelect(item.id)}
+            {...item}
+            {...rest}
+          />
         ))}
       </ScrollView>
     </Animated.View>
   )
-}
+})
 
 const $containerTags: ViewStyle = {
   alignItems: "center",
