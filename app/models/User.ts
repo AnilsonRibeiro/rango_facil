@@ -28,6 +28,11 @@ export const UserModel = types
       return self.name
     },
 
+    get shortName() {
+      const name = self.name.split(" ")
+      return `${name[0]} ${name[name.length - 1]}`
+    },
+
     get photo() {
       return self.avatar
     },

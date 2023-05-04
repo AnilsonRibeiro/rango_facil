@@ -30,6 +30,9 @@ import SojaSVG from "../../assets/icons/svgs/soja.svg"
 import SulfatoSVG from "../../assets/icons/svgs/sulfato.svg"
 import { SvgProps } from "react-native-svg"
 
+import * as PhosphorIconsSVG from "phosphor-react-native"
+import { colors } from "../theme"
+
 export type IconTypes = keyof typeof iconRegistry
 
 interface IconProps extends TouchableOpacityProps {
@@ -81,8 +84,8 @@ export function Icon(props: IconProps | IconSVGProps) {
   const IconSVG: React.FC<SvgProps> = isSVG ? iconRegistry[props.icon] : null
   const {
     icon,
-    color,
-    size,
+    color = colors.palette.neutral100,
+    size = 24,
     style: $imageStyleOverride,
     containerStyle: $containerStyleOverride,
     ...WrapperProps
@@ -174,6 +177,7 @@ export const iconRegistry = {
   salsa: SalsaSVG,
   soja: SojaSVG,
   sulfato: SulfatoSVG,
+  ...PhosphorIconsSVG,
 }
 
 const $imageStyle: ImageStyle = {
