@@ -9,6 +9,7 @@ import { useNavigation } from "@react-navigation/native"
 import { useStores } from "../../../models"
 import { spacing } from "../../../theme"
 import { Header } from "../components/Header"
+import { Card } from "../components/Card"
 
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../models"
@@ -45,6 +46,8 @@ export const HomeScreen: FC<StackScreenProps<AuthenticatedStackParamList, "Home"
         <View style={$content}>
           <Header />
           <Title text="Categorias" />
+
+          <Card text="Café da manhã" icon="Clock" />
         </View>
 
         <Button text="Logout" preset="outline" onPress={handleLogout} />
