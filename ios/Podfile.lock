@@ -1057,10 +1057,10 @@ PODS:
     - React-Core
   - RNCAsyncStorage (1.17.12):
     - React-Core
-  - RNFBApp (17.4.3):
+  - RNFBApp (17.5.0):
     - Firebase/CoreOnly (= 10.7.0)
     - React-Core
-  - RNFBFirestore (17.4.3):
+  - RNFBFirestore (17.5.0):
     - Firebase/Firestore (= 10.7.0)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - React-Core
@@ -1376,8 +1376,8 @@ SPEC CHECKSUMS:
   ReactCommon: c9246996e73bf75a2c6c3ff15f1e16707cdc2da9
   RNBootSplash: 5f346163977573d6b2aeba1b25df9d2245c0d73c
   RNCAsyncStorage: 09fc8595e6d6f6d5abf16b23a56b257d9c6b7c5b
-  RNFBApp: 922564a99c97a8cab366d5a918f9fecff6b563d5
-  RNFBFirestore: 9c982af765b64f2566cbeda3fb1024ddf5d905b4
+  RNFBApp: d59efa0872fff4e27de03cca3c528c203a436ae5
+  RNFBFirestore: 4edfb28f95cb461ef8423c6ae4354dfe98186586
   RNGestureHandler: 071d7a9ad81e8b83fe7663b303d132406a7d8f39
   RNGoogleSignin: 22e468a9474dbcb8618d8847205ad4f0b2575d13
   RNReanimated: bec7736122a268883bdede07f1bf9cf4b40158db
