@@ -4,25 +4,17 @@
  * Generally speaking, it will contain an auth flow (registration, login, forgot password)
  * and a "main" flow which the user will use once logged in.
  */
-import {
-  DarkTheme,
-  DefaultTheme,
-  Link,
-  NavigationContainer,
-  useLinkTo,
-} from "@react-navigation/native"
+import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native"
 import { StackScreenProps, createStackNavigator } from "@react-navigation/stack"
 import { observer } from "mobx-react-lite"
 import React, { useEffect } from "react"
 import { useColorScheme } from "react-native"
 import Config from "../config"
 
-import { navigate, navigationRef, useBackButtonHandler } from "./navigationUtilities"
+import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 
-import { AuthenticatedStack } from "../features/Home/navigation/AuthenticatedNavigator"
 import { OnboardingStack } from "../features/Onboarding/navigation/OnboardingNavigator"
-import { useStores } from "../models"
-import { messaging } from "../utils/firebase/Messaging"
+import { AuthenticationProvider } from "../context/Authentication"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -58,70 +50,68 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = StackScreen
 const Stack = createStackNavigator<AppStackParamList>()
 
 const AppStack = observer(function AppStack() {
-  const { authenticationStore } = useStores()
-  const linkTo = useLinkTo<AppStackParamList>()
-  console.log("authenticationStore.isAuthenticated", authenticationStore.isAuthenticated)
+  // useEffect(() => {
+  //   messaging.setupNotificationToken()
+  //   messaging.setupNotificationListener()
 
-  useEffect(() => {
-    messaging.setupNotificationToken()
-    messaging.setupNotificationListener()
+  //   return () => {
+  //     messaging.messaging.onTokenRefresh(null)
+  //     messaging.messaging.setBackgroundMessageHandler(null)
+  //   }
+  // }, [])
 
-    return () => {
-      messaging.messaging.onTokenRefresh(null)
-      messaging.messaging.setBackgroundMessageHandler(null)
-    }
-  }, [])
+  // useEffect(() => {
+  //   // Assume a message-notification contains a "type" property in the data payload of the screen to open
 
-  useEffect(() => {
-    // Assume a message-notification contains a "type" property in the data payload of the screen to open
+  //   messaging.messaging.onNotificationOpenedApp((remoteMessage) => {
+  //     console.log(
+  //       "Notification caused app to open from background state:",
+  //       remoteMessage.notification,
+  //     )
+  //   })
 
-    messaging.messaging.onNotificationOpenedApp((remoteMessage) => {
-      console.log(
-        "Notification caused app to open from background state:",
-        remoteMessage.notification,
-      )
-    })
-
-    // Check whether an initial notification is available
-    messaging.messaging.getInitialNotification().then((remoteMessage) => {
-      if (remoteMessage) {
-        console.log("Notification caused app to open from quit state:", remoteMessage.notification)
-        console.log("remoteMessage.data", remoteMessage.data)
-        // setInitialRoute(remoteMessage.data.type) // e.g. "Settings"
-        linkTo(remoteMessage.data.url)
-      }
-    })
-  }, [])
+  //   // Check whether an initial notification is available
+  //   messaging.messaging.getInitialNotification().then((remoteMessage) => {
+  //     if (remoteMessage) {
+  //       console.log("Notification caused app to open from quit state:", remoteMessage.notification)
+  //       console.log("remoteMessage.data", remoteMessage.data)
+  //       // setInitialRoute(remoteMessage.data.type) // e.g. "Settings"
+  //       linkTo(remoteMessage.data.url)
+  //     }
+  //   })
+  // }, [])
 
   return (
-    <Stack.Navigator
-      screenOptions={{ headerShown: false }}
-      initialRouteName={authenticationStore.isAuthenticated ? "Authenticated" : "Onboarding"}
-    >
-      {authenticationStore.isAuthenticated ? (
-        <Stack.Screen name="Authenticated" component={AuthenticatedStack} />
-      ) : (
-        <Stack.Screen name="Onboarding" component={OnboardingStack} />
-      )}
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={"Onboarding"}>
+      <Stack.Screen name="Onboarding" component={OnboardingStack} />
+
       {/** 🔥 Your screens go here */}
     </Stack.Navigator>
   )
 })
 
-interface NavigationProps extends Partial<React.ComponentProps<typeof NavigationContainer>> {}
+interface NavigationProps extends Partial<React.ComponentProps<typeof NavigationContainer>> {
+  hideSplashScreen: () => Promise<void>
+}
 
 export const AppNavigator = observer(function AppNavigator(props: NavigationProps) {
   const colorScheme = useColorScheme()
 
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
 
+  useEffect(() => {
+    props.hideSplashScreen()
+  }, [])
+
   return (
-    <NavigationContainer
-      ref={navigationRef}
-      theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-      {...props}
-    >
-      <AppStack />
-    </NavigationContainer>
+    <AuthenticationProvider>
+      <NavigationContainer
+        ref={navigationRef}
+        theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        {...props}
+      >
+        <AppStack />
+      </NavigationContainer>
+    </AuthenticationProvider>
   )
 })

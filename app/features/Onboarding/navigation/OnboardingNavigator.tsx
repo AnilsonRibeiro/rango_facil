@@ -30,7 +30,13 @@ import { SignUpScreen } from "../screens/SignUpScreen"
 export type OnboardingStackParamList = {
   Welcome: undefined
   SignUp: undefined
-  PersonalData: undefined
+  PersonalData: {
+    id: string
+    name: string
+    email: string
+    idToken: string
+    avatar?: string
+  }
 }
 
 // Documentation: https://reactnavigation.org/docs/stack-navigator/

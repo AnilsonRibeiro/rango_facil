@@ -1,16 +1,17 @@
 import React, { FC, useEffect, useReducer, useState } from "react"
-import { observer } from "mobx-react-lite"
-import { LayoutChangeEvent, View, ViewStyle } from "react-native"
-import { StackScreenProps } from "@react-navigation/stack"
-import { Button, Screen, Avatar, TextFieldForEdit, Text, DateField } from "../../../components"
-import { colors, spacing } from "../../../theme"
+import { View, ViewStyle } from "react-native"
+import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack"
+import { Button, Screen, Avatar, TextFieldForEdit, DateField, Title } from "../../../components"
 
 import { OnboardingStackParamList } from "app/features/Onboarding/navigation/OnboardingNavigator"
-import { Food, FoodOption, useStores } from "../../../models"
+
 import { Tags } from "../components/Tags"
-import { tags as data, categories, TagType } from "../constants/tags"
+import { tags as data, TagType, CategoryType } from "../constants/tags"
 
 import { Progress, StepType } from "../components/Progress"
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
+import { spacing } from "../../../theme"
+import { useGetFoodProfiles } from "../services/hooks/useGetFoodProfiles"
 
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../models"
@@ -34,187 +35,159 @@ type ActionsType = {
   payload: number
 }
 
-export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "PersonalData">> =
-  observer(function PersonalData() {
-    const [width, setWidth] = useState<number>(0)
-    const [widthPerfilAlimentar, setWidthPerfilAlimentar] = useState<number>(0)
+export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "PersonalData">> = () => {
+  const [dateOfBirth, setDateOfBirth] = useState<Date>(new Date())
+  const [categoriesSelected, setCategoriesSelected] = useState<CategoryType[]>([])
+  const [allergiesSelected, setAllergiesSelected] = useState<TagType[]>([])
 
-    const completedStepReduce = (
-      state: { steps: StepType[]; currentStep: number },
-      action: ActionsType,
-    ) => {
-      const { type, payload } = action
+  const { params } = useRoute<RouteProp<OnboardingStackParamList, "PersonalData">>()
+  const {} = useNavigation<StackNavigationProp<OnboardingStackParamList, "PersonalData">>()
 
-      switch (type) {
-        case ActionsEnum.COMPLETED_STEP:
-          return {
-            steps: state.steps.map((step, index) => {
-              if (index === payload - 1) {
-                return { ...step, completed: true }
-              }
-              return step
-            }),
-            currentStep: payload,
-          }
-      }
-    }
-
-    const [state, dispatch] = useReducer(completedStepReduce, {
-      steps: [
-        { id: "1", completed: false },
-        { id: "2", completed: false },
-        { id: "3", completed: false },
-      ],
-      currentStep: 0,
-    })
-
-    const $viewStyle = (width: number) =>
-      ({
-        height: 0,
-        width,
-        borderTopWidth: 2,
-        borderBottomWidth: 2,
-        borderLeftWidth: width,
-        borderStyle: "solid",
-
-        backgroundColor: colors.transparent,
-        borderTopColor: colors.transparent,
-        borderBottomColor: colors.transparent,
-        borderLeftColor: colors.palette.primary300,
-
-        borderRadius: 9999,
-      } as ViewStyle)
-
-    // Pull in one of our MST stores
-    const { authenticationStore } = useStores()
-
-    const avatar = authenticationStore.user.photo
-    const name = authenticationStore.user.fullName
-    const dateOfBirth = authenticationStore.user.dateOfBirth
-    const onChangeDate = authenticationStore.user.setDateOfBirth
-
-    const handleCompletedStep = () => {
-      dispatch({ type: ActionsEnum.COMPLETED_STEP, payload: state.currentStep + 1 })
-    }
-
-    const getWidth = (e: LayoutChangeEvent, locale: "default" | "perfilAlimentar") => {
-      if (locale === "default") {
-        setWidth(e.nativeEvent.layout.width)
-      } else {
-        setWidthPerfilAlimentar(e.nativeEvent.layout.width)
-      }
-    }
-
-    const handlePressFoodTag = (item: TagType) => {
-      const exists = authenticationStore.user.existsFood(item.id)
-
-      if (exists) {
-        authenticationStore.user.removeFood(item.id)
-      } else {
-        authenticationStore.user.addFood({
-          id: item.id,
-          name: item.name,
-        } as Food)
-      }
-    }
-
-    const handlePressFoodOption = (item: TagType) => {
-      const exists = authenticationStore.user.existsFoodOption(item.id)
-
-      if (exists) {
-        authenticationStore.user.removeFoodOption(item.id)
-      } else {
-        authenticationStore.user.addFoodOption({
-          id: item.id,
-          name: item.name,
-        } as FoodOption)
-      }
-    }
-
-    const handleCreateAccount = async () => {
-      try {
-        await authenticationStore.user.createAccount()
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    const isSelectFood = (id: string): boolean => {
-      return !!authenticationStore.user.existsFood(id)
-    }
-
-    const isSelectFoodOption = (id: string): boolean => {
-      return !!authenticationStore.user.existsFoodOption(id)
-    }
-
-    useEffect(() => {
-      console.log(state.steps)
-    }, [state])
-
-    const showTags = state.steps[0].completed
-    const showCategories = state.steps[1].completed
-
-    return (
-      <Screen
-        style={$root}
-        preset="fixed"
-        safeAreaEdges={["top", "bottom"]}
-        contentContainerStyle={$rootContent}
-      >
-        <Progress steps={state.steps} />
-
-        <View style={$content}>
-          <View style={$wrapperAvatar}>
-            <Avatar source={{ uri: avatar }} />
-            <View style={$wrapperFields}>
-              <TextFieldForEdit value={name} placeholder="Nome sobrenome" />
-              <DateField value={dateOfBirth} onChange={onChangeDate} />
-            </View>
-          </View>
-          {showTags && (
-            <Tags
-              data={data}
-              isSelect={isSelectFood}
-              onPressTag={handlePressFoodTag}
-              headerComponent={
-                <View style={$headerTags} onLayout={(e) => getWidth(e, "default")}>
-                  <Text text="Alergias:" preset="subheading" />
-                  <View style={$viewStyle(width)} />
-                </View>
-              }
-              scrollStyle={$overrideScrollViewStyleTags}
-            />
-          )}
-
-          {showCategories && (
-            <Tags
-              data={categories}
-              isSelect={isSelectFoodOption}
-              onPressTag={handlePressFoodOption}
-              variant="rectangular"
-              scrollStyle={$overrideScrollViewStyleCategories}
-              headerComponent={
-                <View style={$headerTags} onLayout={(e) => getWidth(e, "perfilAlimentar")}>
-                  <Text text="Perfil alimentar:" preset="subheading" />
-                  <View style={$viewStyle(widthPerfilAlimentar)} />
-                </View>
-              }
-            />
-          )}
-        </View>
-        <View style={$wrapperButton}>
-          <Button
-            text="Continuar"
-            onPress={state.currentStep === 2 ? handleCreateAccount : handleCompletedStep}
-            disabled={authenticationStore.user.loading}
-          />
-        </View>
-      </Screen>
-    )
+  const { data: categories } = useGetFoodProfiles({
+    retry: 3,
+    initialData: [],
+    onError: (error) => {
+      console.log(error)
+    },
   })
 
-const $root: ViewStyle = {
-  flex: 1,
+  const completedStepReduce = (
+    state: { steps: StepType[]; currentStep: number },
+    action: ActionsType,
+  ) => {
+    const { type, payload } = action
+
+    switch (type) {
+      case ActionsEnum.COMPLETED_STEP:
+        return {
+          steps: state.steps.map((step, index) => {
+            if (index === payload - 1) {
+              return { ...step, completed: true }
+            }
+            return step
+          }),
+          currentStep: payload,
+        }
+    }
+  }
+
+  const [state, dispatch] = useReducer(completedStepReduce, {
+    steps: [
+      { id: "1", completed: false },
+      { id: "2", completed: false },
+      { id: "3", completed: false },
+    ],
+    currentStep: 0,
+  })
+
+  const handleCompletedStep = () => {
+    dispatch({ type: ActionsEnum.COMPLETED_STEP, payload: state.currentStep + 1 })
+  }
+
+  const handlePressFoodTag = (item: TagType) => {
+    const selectedItem = allergiesSelected.find((allergy) => allergy.id === item.id)
+
+    if (selectedItem && allergiesSelected.length > 0) {
+      return setAllergiesSelected((prev) => prev.filter((allergy) => allergy.id !== item.id))
+    }
+
+    setAllergiesSelected((prev) => [...prev, item])
+  }
+
+  const handlePressFoodOption = (item: CategoryType) => {
+    const selectedItem = categoriesSelected.find((category) => category.id === item.id)
+
+    if (selectedItem) {
+      return setCategoriesSelected((prev) => prev.filter((category) => category.id !== item.id))
+    }
+
+    setCategoriesSelected((prev) => [...prev, item])
+  }
+
+  const handleCreateAccount = async () => {
+    try {
+      console.log("handleCreateAccount")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const isSelectFood = (id: string): boolean => {
+    return allergiesSelected.find((allergy) => allergy.id === id) !== undefined
+  }
+
+  const isSelectFoodOption = (id: string): boolean => {
+    return categoriesSelected.find((category) => category.id === id) !== undefined
+  }
+
+  const onChangeDate = (data: Date) => {
+    setDateOfBirth(data)
+
+    console.log(new Date(data).toISOString())
+  }
+
+  const showCategories = state.steps[0].completed
+  const showTags = state.steps[1].completed
+
+  const buttonIsDisabled = () => {
+    if (state.currentStep === 0) {
+      return false
+    }
+
+    if (state.currentStep === 1) {
+      return categoriesSelected.length === 0
+    }
+
+    return false
+  }
+
+  useEffect(() => {
+    console.log(categoriesSelected)
+  }, [categoriesSelected])
+
+  return (
+    <Screen preset="fixed" safeAreaEdges={["top", "bottom"]} contentContainerStyle={$rootContent}>
+      <Progress steps={state.steps} />
+
+      <View style={$content}>
+        <View style={$wrapperAvatar}>
+          <Avatar source={{ uri: params?.avatar }} />
+          <View style={$wrapperFields}>
+            <TextFieldForEdit value={params.name} placeholder="Nome sobrenome" numberOfLines={1} />
+            <DateField value={dateOfBirth} onChange={onChangeDate} />
+          </View>
+        </View>
+
+        {showCategories && (
+          <Tags
+            data={categories}
+            isSelect={isSelectFoodOption}
+            onPressTag={handlePressFoodOption}
+            variant="rectangular"
+            scrollStyle={$overrideScrollViewStyleCategories}
+            headerComponent={<Title text="Perfil alimentar:" />}
+          />
+        )}
+
+        {showTags && (
+          <Tags
+            data={data}
+            isSelect={isSelectFood}
+            onPressTag={handlePressFoodTag}
+            headerComponent={<Title text="Alergias:" />}
+            scrollStyle={$overrideScrollViewStyleTags}
+          />
+        )}
+      </View>
+      <View style={$wrapperButton}>
+        <Button
+          text="Continuar"
+          onPress={state.currentStep === 2 ? handleCreateAccount : handleCompletedStep}
+          disabled={buttonIsDisabled()}
+        />
+      </View>
+    </Screen>
+  )
 }
 
 const $rootContent: ViewStyle = {
@@ -241,10 +214,6 @@ const $wrapperFields: ViewStyle = {
 
 const $wrapperButton: ViewStyle = {
   paddingHorizontal: spacing.large,
-}
-
-const $headerTags: ViewStyle = {
-  alignSelf: "flex-start",
 }
 
 const $overrideScrollViewStyleCategories: ViewStyle = {

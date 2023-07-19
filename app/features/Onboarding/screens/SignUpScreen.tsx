@@ -1,13 +1,14 @@
 import React, { FC } from "react"
-import { observer } from "mobx-react-lite"
+
 import { ImageBackground, TextStyle, View, ViewStyle } from "react-native"
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack"
 import { Screen, Text, GoogleButton, AppleButton } from "../../../components"
 import { colors, spacing } from "../../../theme"
 import { OnboardingStackParamList } from "../navigation/OnboardingNavigator"
 
-import { useStores } from "../../../models"
 import { useNavigation } from "@react-navigation/native"
+
+import { useAuthentication } from "../../../hooks/useAuthentication"
 
 const signUpBackground = require("../../../../assets/images/onboarding/signup-background.png")
 
@@ -23,39 +24,46 @@ const signUpBackground = require("../../../../assets/images/onboarding/signup-ba
 
 // REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
 // @ts-ignore
-export const SignUpScreen: FC<StackScreenProps<OnboardingStackParamList, "SignUp">> = observer(
-  function SignUpScreen() {
-    // Pull in one of our MST stores
-    const { authenticationStore } = useStores()
+export const SignUpScreen: FC<StackScreenProps<OnboardingStackParamList, "SignUp">> = () => {
+  const { googleOAuth } = useAuthentication()
 
-    // Pull in navigation via hook
-    const navigation = useNavigation<StackNavigationProp<OnboardingStackParamList>>()
+  // Pull in navigation via hook
+  const navigation = useNavigation<StackNavigationProp<OnboardingStackParamList>>()
 
-    const handleSignUp = async () => {
-      authenticationStore.signUp().then(() => {
-        navigation.replace("PersonalData")
+  const handleSignUp = async () => {
+    try {
+      const response = await googleOAuth()
+
+      navigation.push("PersonalData", {
+        id: response.user.id,
+        email: response.user.email,
+        name: response.user.name,
+        avatar: response.user.photo,
+        idToken: response.idToken,
       })
+    } catch (error) {
+      console.log(error)
     }
+  }
 
-    return (
-      <ImageBackground source={signUpBackground} resizeMode="cover" style={$image}>
-        <Screen
-          style={$root}
-          contentContainerStyle={$container}
-          preset="auto"
-          backgroundColor={colors.transparent}
-          safeAreaEdges={["end"]}
-        >
-          <Text preset="heading" text="Rango Fácil" style={[$title, $text]} />
+  return (
+    <ImageBackground source={signUpBackground} resizeMode="cover" style={$image}>
+      <Screen
+        style={$root}
+        contentContainerStyle={$container}
+        preset="auto"
+        backgroundColor={colors.transparent}
+        safeAreaEdges={["end"]}
+      >
+        <Text preset="heading" text="Rango Fácil" style={[$title, $text]} />
 
-          <GoogleButton onPress={handleSignUp} />
-          <View style={$space} />
-          <AppleButton onPress={() => console.log("Apple Button")} />
-        </Screen>
-      </ImageBackground>
-    )
-  },
-)
+        <GoogleButton onPress={handleSignUp} />
+        <View style={$space} />
+        <AppleButton onPress={() => console.log("Apple Button")} />
+      </Screen>
+    </ImageBackground>
+  )
+}
 
 const $root: ViewStyle = {
   flex: 1,

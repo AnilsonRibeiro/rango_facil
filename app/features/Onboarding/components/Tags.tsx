@@ -64,16 +64,17 @@ export const Tags: FC<TagsProps> = observer(function Tags(props) {
         horizontal
         contentContainerStyle={$containerTags}
       >
-        {data.map((item) => (
-          <Tag
-            key={item.id}
-            variant={variant}
-            onPress={() => onPressTag(item)}
-            selected={isSelect(item.id)}
-            {...item}
-            {...rest}
-          />
-        ))}
+        {data &&
+          data.map((item) => (
+            <Tag
+              key={item.id}
+              variant={variant}
+              onPress={() => onPressTag(item)}
+              selected={isSelect(item.id)}
+              {...item}
+              {...rest}
+            />
+          ))}
       </ScrollView>
     </Animated.View>
   )

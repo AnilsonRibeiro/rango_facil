@@ -123,7 +123,12 @@ export const tags: Array<TagType> = [
   },
 ]
 
-export const categories: Array<Pick<TagType, "id" | "name">> = [
+export type CategoryType = {
+  id: string
+  name: string
+}
+
+export const categories: CategoryType[] = [
   {
     id: "1",
     name: "Vegan",
