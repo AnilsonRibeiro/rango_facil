@@ -2,7 +2,7 @@ import React, { FC } from "react"
 import { observer } from "mobx-react-lite"
 import { View, ViewStyle } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack"
-import { Screen, Title } from "../../../components"
+import { Button, Icon, Screen, Title } from "../../../components"
 
 import { AuthenticatedStackParamList } from "../navigation/AuthenticatedNavigator"
 
@@ -26,7 +26,7 @@ import { useAuthentication } from "../../../hooks/useAuthentication"
 
 export const HomeScreen: FC<StackScreenProps<AuthenticatedStackParamList, "Home">> = observer(
   function HomeScreen() {
-    const { user } = useAuthentication()
+    const { user, logout } = useAuthentication()
     return (
       <Screen
         style={$root}
@@ -35,11 +35,18 @@ export const HomeScreen: FC<StackScreenProps<AuthenticatedStackParamList, "Home"
         safeAreaEdges={["top", "bottom"]}
       >
         <View style={$content}>
-          <Header name={user.name} image={user.avatar} />
+          <Header name={user?.name} image={user?.avatar} />
           <Title text="Categorias" />
 
           <Card text="Café da manhã" icon="Clock" />
         </View>
+
+        <Button
+          preset="outline"
+          text="Sair"
+          RightAccessory={() => <Icon icon="SignOut" style={$buttonIcon} />}
+          onPress={logout}
+        />
       </Screen>
     )
   },
@@ -61,4 +68,8 @@ const $container: ViewStyle = {
   justifyContent: "center",
   alignItems: "center",
   paddingHorizontal: spacing.large,
+}
+
+const $buttonIcon: ViewStyle = {
+  marginLeft: spacing.extraSmall,
 }

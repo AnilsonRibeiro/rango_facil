@@ -25,6 +25,7 @@ interface IAuthenticationContext {
   user: User | null
   rehydrated: boolean
   login: (data: LoginDataType) => Promise<void>
+  logout: () => Promise<void>
   googleOAuth: () => Promise<GoogleUser>
 }
 

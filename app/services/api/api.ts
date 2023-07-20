@@ -10,7 +10,7 @@ import axios, { AxiosInstance } from "axios"
 import Config from "../../config"
 
 import type { ApiConfig } from "./api.types"
-import { loadString } from "../../utils/storage"
+import { loadString, saveString } from "../../utils/storage"
 
 /**
  * Configuring the apisauce instance.
@@ -49,6 +49,7 @@ export class Api {
 
   setAuthorizationToken(token: string) {
     this.client.defaults.headers.Authorization = `Bearer ${token}`
+    return saveString("rango_facil:accessToken", token)
   }
 }
 

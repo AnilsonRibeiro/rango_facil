@@ -2,7 +2,7 @@ import React, { FC, createContext, useCallback, useEffect, useState } from "reac
 import { IAuthenticationContext, IAuthenticationProviderProps, User } from "./types"
 import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-signin"
 import { useCreateAccount } from "../../features/Onboarding/services/hooks/useCreateAccount"
-import { load, save, saveString } from "../../utils/storage"
+import { clear, load, save } from "../../utils/storage"
 import { api } from "../../services/api"
 import { getProfile } from "../../features/Onboarding/services/api/getProfile"
 
@@ -74,8 +74,7 @@ export const AuthenticationProvider: FC<IAuthenticationProviderProps> = ({
           avatar,
         })
 
-        api.setAuthorizationToken(idToken)
-        await saveString("rango_facil:accessToken", idToken)
+        await api.setAuthorizationToken(idToken)
 
         const { data } = await onGetProfile()
 
@@ -108,6 +107,11 @@ export const AuthenticationProvider: FC<IAuthenticationProviderProps> = ({
     [],
   )
 
+  const logout = useCallback(async () => {
+    await clear()
+    setUser(null)
+  }, [])
+
   useEffect(() => {
     if (!rehydrated) {
       onStart()
@@ -119,6 +123,7 @@ export const AuthenticationProvider: FC<IAuthenticationProviderProps> = ({
         rehydrated,
         user,
         login,
+        logout,
         googleOAuth,
       }}
     >

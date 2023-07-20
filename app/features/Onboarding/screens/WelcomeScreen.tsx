@@ -116,7 +116,7 @@ export const WelcomeScreen: FC<StackScreenProps<OnboardingStackParamList, "Welco
         <Screen
           style={$root}
           contentContainerStyle={[$container]}
-          preset="auto"
+          preset="fixed"
           backgroundColor={colors.transparent}
           safeAreaEdges={["bottom"]}
         >

@@ -87,9 +87,9 @@ const AppStack = observer(function AppStack() {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName={user?.id ? "Home" : "Onboarding"}
+      initialRouteName={user ? "Home" : "Onboarding"}
     >
-      {user?.id ? (
+      {user ? (
         <Stack.Group>
           <Stack.Screen name="Home" component={HomeScreen} />
         </Stack.Group>
