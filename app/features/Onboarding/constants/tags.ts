@@ -7,121 +7,87 @@ export type TagType = {
   preset?: "default" | "medium" | "big"
 }
 
-export const tags: Array<TagType> = [
-  {
-    id: "cogumelo",
+export const tags = {
+  Cogumelo: {
     icon: "cogumelo",
-    name: "Cogumelo",
     preset: "big",
   },
-  {
-    id: "feijao",
+  Feijão: {
     icon: "feijao",
-    name: "Feijão",
     preset: "default",
   },
-  {
-    id: "nozes",
+  Nozes: {
     icon: "nozes",
-    name: "Nozes",
     preset: "medium",
   },
 
-  {
-    id: "milho",
+  Milho: {
     icon: "milho",
-    name: "Milho",
     preset: "medium",
   },
 
-  {
-    id: "salsa",
+  Salsa: {
     icon: "salsa",
-    name: "Salsa",
     preset: "default",
   },
 
-  {
-    id: "ovos",
+  Ovos: {
     icon: "ovos",
-    name: "Ovos",
     preset: "default",
   },
 
-  {
-    id: "mariscos",
+  Mariscos: {
     icon: "mariscos",
-    name: "Maricos",
     preset: "medium",
   },
-  {
-    id: "gluten",
+  Gluten: {
     icon: "gluten",
-    name: "Glúten",
     preset: "medium",
   },
 
-  {
-    id: "peixe",
+  Peixe: {
     icon: "peixe",
-    name: "Peixe",
     preset: "default",
   },
 
-  {
-    id: "amendoin",
-    icon: "amendoin",
-    name: "Amendoim",
+  Amendoim: {
+    icon: "amendoim",
     preset: "big",
   },
-  {
-    id: "gergilim",
-    icon: "gergilim",
-    name: "Gergirlim",
+  Gergelim: {
+    icon: "gergelim",
     preset: "medium",
   },
-  {
-    id: "leite",
+  Leite: {
     icon: "leite",
-    name: "Leite",
     preset: "default",
   },
 
-  {
-    id: "mel",
+  Mel: {
     icon: "mel",
-    name: "Mel",
     preset: "default",
   },
 
-  {
-    id: "mostarda",
+  Mostarda: {
     icon: "mostarda",
-    name: "Mostarda",
     preset: "medium",
   },
 
-  {
-    id: "sulfato",
+  Sulfato: {
     icon: "sulfato",
-    name: "Sulfato",
     preset: "medium",
   },
 
-  {
-    id: "soja",
+  Soja: {
     icon: "soja",
-    name: "Soja",
     preset: "default",
   },
 
-  {
-    id: "crustacoes",
+  Crustáceos: {
     icon: "crustaceos",
-    name: "Crustáceos",
     preset: "big",
   },
-]
+}
 
 export type CategoryType = {
   id: string

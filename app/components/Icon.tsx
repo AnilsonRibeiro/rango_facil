@@ -161,11 +161,11 @@ export const iconRegistry = {
   // sulfato: require("../../assets/icons/sulfato.png"),
 
   milho: MilhoSVG,
-  amendoin: AmendoinSVG,
+  amendoim: AmendoinSVG,
   cogumelo: CogumeloSVG,
   crustaceos: CrustaceosSVG,
   feijao: FeijaoSVG,
-  gergilim: GergilimSVG,
+  gergelim: GergilimSVG,
   gluten: GlutenSVG,
   leite: LeiteSVG,
   mariscos: MariscosSVG,

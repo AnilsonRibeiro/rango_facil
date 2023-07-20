@@ -1,8 +1,8 @@
-import React, { FC, createContext, useCallback, useState } from "react"
+import React, { FC, createContext, useCallback, useEffect, useState } from "react"
 import { IAuthenticationContext, IAuthenticationProviderProps, User } from "./types"
 import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-signin"
 import { useCreateAccount } from "../../features/Onboarding/services/hooks/useCreateAccount"
-import { saveString } from "../../utils/storage"
+import { load, save, saveString } from "../../utils/storage"
 import { api } from "../../services/api"
 import { getProfile } from "../../features/Onboarding/services/api/getProfile"
 
@@ -10,10 +10,24 @@ export const AuthenticationContext = createContext<IAuthenticationContext>(
   {} as IAuthenticationContext,
 )
 
-export const AuthenticationProvider: FC<IAuthenticationProviderProps> = ({ children }) => {
+export const AuthenticationProvider: FC<IAuthenticationProviderProps> = ({
+  children,
+  hideSplashScreen,
+}) => {
   const [user, setUser] = useState<User | null>(null)
+  const [rehydrated, setRehydrated] = useState<boolean>(false)
 
   const { mutateAsync } = useCreateAccount()
+
+  const onStart = async () => {
+    const data = await load("rango_facil:user_data")
+    console.log(data)
+    if (data) {
+      setUser(data as User)
+    }
+    setRehydrated(true)
+    hideSplashScreen()
+  }
 
   const onGetProfile = () => {
     return getProfile()
@@ -32,25 +46,31 @@ export const AuthenticationProvider: FC<IAuthenticationProviderProps> = ({ child
     async ({
       email,
       id,
+      birthday,
       name,
       avatar,
       idToken,
+      userFoodProfiles,
+      userAllergies,
     }: {
       id: string
+      birthday: string
       name: string
       email: string
       avatar?: string
+      userFoodProfiles: string[]
+      userAllergies?: string[]
       idToken: string
     }) => {
       try {
         await mutateAsync({
           name,
           email,
-          birthday: "1990-01-01",
+          birthday,
           socialType: "GOOGLE",
           socialUserId: id,
-          userFoodProfiles: ["clk92f8d3000hv7ve3euizyy8"],
-          userAllergies: ["clk92f8ck0000v7veweq6j52y"],
+          userFoodProfiles,
+          userAllergies,
           avatar,
         })
 
@@ -59,7 +79,7 @@ export const AuthenticationProvider: FC<IAuthenticationProviderProps> = ({ child
 
         const { data } = await onGetProfile()
 
-        setUser({
+        const userData = {
           id: data.id,
           birthday: data.birthday,
           email: data.email,
@@ -67,17 +87,9 @@ export const AuthenticationProvider: FC<IAuthenticationProviderProps> = ({ child
           avatar: data?.avatar,
           userFoodProfiles: data.userFoodProfiles,
           userAllergies: data.userAllergies,
-        })
-
-        console.tron.log("USER", {
-          id: data.id,
-          birthday: data.birthday,
-          email: data.email,
-          name: data.name,
-          avatar: data?.avatar,
-          userFoodProfiles: data.userFoodProfiles,
-          userAllergies: data.userAllergies,
-        })
+        }
+        setUser(userData)
+        await save("rango_facil:user_data", userData)
       } catch (error) {
         console.log(error)
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -96,9 +108,15 @@ export const AuthenticationProvider: FC<IAuthenticationProviderProps> = ({ child
     [],
   )
 
+  useEffect(() => {
+    if (!rehydrated) {
+      onStart()
+    }
+  }, [])
   return (
     <AuthenticationContext.Provider
       value={{
+        rehydrated,
         user,
         login,
         googleOAuth,

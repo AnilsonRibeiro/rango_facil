@@ -7,7 +7,7 @@
 import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native"
 import { StackScreenProps, createStackNavigator } from "@react-navigation/stack"
 import { observer } from "mobx-react-lite"
-import React, { useEffect } from "react"
+import React from "react"
 import { useColorScheme } from "react-native"
 import Config from "../config"
 
@@ -15,6 +15,8 @@ import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 
 import { OnboardingStack } from "../features/Onboarding/navigation/OnboardingNavigator"
 import { AuthenticationProvider } from "../context/Authentication"
+import { HomeScreen } from "../features/Home/screens/Home"
+import { useAuthentication } from "../hooks/useAuthentication"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -31,7 +33,7 @@ import { AuthenticationProvider } from "../context/Authentication"
  */
 
 export type AppStackParamList = {
-  Authenticated: undefined
+  Home: undefined
   Onboarding: undefined
   // 🔥 Your screens go here
 }
@@ -50,6 +52,7 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = StackScreen
 const Stack = createStackNavigator<AppStackParamList>()
 
 const AppStack = observer(function AppStack() {
+  const { user } = useAuthentication()
   // useEffect(() => {
   //   messaging.setupNotificationToken()
   //   messaging.setupNotificationListener()
@@ -82,8 +85,19 @@ const AppStack = observer(function AppStack() {
   // }, [])
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={"Onboarding"}>
-      <Stack.Screen name="Onboarding" component={OnboardingStack} />
+    <Stack.Navigator
+      screenOptions={{ headerShown: false }}
+      initialRouteName={user?.id ? "Home" : "Onboarding"}
+    >
+      {user?.id ? (
+        <Stack.Group>
+          <Stack.Screen name="Home" component={HomeScreen} />
+        </Stack.Group>
+      ) : (
+        <Stack.Group>
+          <Stack.Screen name="Onboarding" component={OnboardingStack} />
+        </Stack.Group>
+      )}
 
       {/** 🔥 Your screens go here */}
     </Stack.Navigator>
@@ -99,12 +113,8 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
 
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
 
-  useEffect(() => {
-    props.hideSplashScreen()
-  }, [])
-
   return (
-    <AuthenticationProvider>
+    <AuthenticationProvider hideSplashScreen={props.hideSplashScreen}>
       <NavigationContainer
         ref={navigationRef}
         theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}

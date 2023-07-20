@@ -1,5 +1,6 @@
 import React, { ComponentType } from "react"
 import {
+  ActivityIndicator,
   Pressable,
   PressableProps,
   PressableStateCallbackType,
@@ -18,6 +19,10 @@ export interface ButtonAccessoryProps {
 }
 
 export interface ButtonProps extends PressableProps {
+  /**
+   * Show loading indicator and disable button
+   */
+  loading?: boolean
   /**
    * Text which is looked up via i18n.
    */
@@ -96,6 +101,7 @@ export function Button(props: ButtonProps) {
     RightAccessory,
     LeftAccessory,
     disabled,
+    loading = false,
     ...rest
   } = props
 
@@ -118,14 +124,23 @@ export function Button(props: ButtonProps) {
   }
 
   return (
-    <Pressable style={$viewStyle} accessibilityRole="button" {...rest}>
+    <Pressable
+      style={$viewStyle}
+      accessibilityRole="button"
+      {...rest}
+      disabled={disabled || loading}
+    >
       {(state) => (
         <>
           {!!LeftAccessory && <LeftAccessory style={$leftAccessoryStyle} pressableState={state} />}
 
-          <Text tx={tx} text={text} txOptions={txOptions} style={$textStyle(state)}>
-            {children}
-          </Text>
+          {loading ? (
+            <ActivityIndicator color={colors.palette.primary700} size={32} />
+          ) : (
+            <Text tx={tx} text={text} txOptions={txOptions} style={$textStyle(state)}>
+              {children}
+            </Text>
+          )}
 
           {!!RightAccessory && (
             <RightAccessory style={$rightAccessoryStyle} pressableState={state} />

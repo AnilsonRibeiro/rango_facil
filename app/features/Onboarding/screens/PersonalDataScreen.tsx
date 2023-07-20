@@ -1,17 +1,20 @@
 import React, { FC, useEffect, useReducer, useState } from "react"
-import { View, ViewStyle } from "react-native"
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack"
+import { Alert, View, ViewStyle } from "react-native"
+import { StackScreenProps } from "@react-navigation/stack"
 import { Button, Screen, Avatar, TextFieldForEdit, DateField, Title } from "../../../components"
 
-import { OnboardingStackParamList } from "app/features/Onboarding/navigation/OnboardingNavigator"
+import { OnboardingStackParamList } from "../navigation/OnboardingNavigator"
 
 import { Tags } from "../components/Tags"
-import { tags as data, TagType, CategoryType } from "../constants/tags"
+import { TagType, CategoryType, tags } from "../constants/tags"
 
 import { Progress, StepType } from "../components/Progress"
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
+import { RouteProp, useRoute } from "@react-navigation/native"
 import { spacing } from "../../../theme"
 import { useGetFoodProfiles } from "../services/hooks/useGetFoodProfiles"
+import { useGetAllergies } from "../services/hooks/useGetAllergies"
+import { toPascalCase } from "../../../utils/normalize/toPascalCase"
+import { useAuthentication } from "../../../hooks/useAuthentication"
 
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../models"
@@ -40,10 +43,21 @@ export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "Person
   const [categoriesSelected, setCategoriesSelected] = useState<CategoryType[]>([])
   const [allergiesSelected, setAllergiesSelected] = useState<TagType[]>([])
 
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
+  const { login } = useAuthentication()
+
   const { params } = useRoute<RouteProp<OnboardingStackParamList, "PersonalData">>()
-  const {} = useNavigation<StackNavigationProp<OnboardingStackParamList, "PersonalData">>()
 
   const { data: categories } = useGetFoodProfiles({
+    retry: 3,
+    initialData: [],
+    onError: (error) => {
+      console.log(error)
+    },
+  })
+
+  const { data: allergies } = useGetAllergies({
     retry: 3,
     initialData: [],
     onError: (error) => {
@@ -105,10 +119,23 @@ export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "Person
   }
 
   const handleCreateAccount = async () => {
+    setIsLoading(true)
     try {
-      console.log("handleCreateAccount")
+      await login({
+        id: params.id,
+        email: params.email,
+        name: params.name,
+        idToken: params.idToken,
+        avatar: params.avatar,
+        birthday: dateOfBirth.toISOString(),
+        userFoodProfiles: categoriesSelected.map((item) => item.id),
+        userAllergies: allergies.map((item) => item.id),
+      })
+      Alert.alert("Conta criada com sucesso!")
     } catch (error) {
-      console.log(error)
+      Alert.alert("Erro ao criar conta", error.message)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -171,7 +198,12 @@ export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "Person
 
         {showTags && (
           <Tags
-            data={data}
+            data={allergies?.map((allergy) => ({
+              id: allergy.id,
+              icon: tags[toPascalCase(allergy.name)].icon,
+              preset: tags[toPascalCase(allergy.name)].preset,
+              name: toPascalCase(allergy.name),
+            }))}
             isSelect={isSelectFood}
             onPressTag={handlePressFoodTag}
             headerComponent={<Title text="Alergias:" />}
@@ -184,6 +216,7 @@ export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "Person
           text="Continuar"
           onPress={state.currentStep === 2 ? handleCreateAccount : handleCompletedStep}
           disabled={buttonIsDisabled()}
+          loading={isLoading}
         />
       </View>
     </Screen>

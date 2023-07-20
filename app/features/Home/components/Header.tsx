@@ -1,33 +1,24 @@
-import { useStores } from "../../../models"
-import { Avatar, Icon, Text } from "../../../components"
+import { Avatar, Text } from "../../../components"
 import React from "react"
 import { TextStyle, View, ViewStyle } from "react-native"
 import { colors, spacing } from "../../../theme"
 
 interface HeaderProps {
-  image?: string
-  name?: string
+  image: string
+  name: string
 }
 
 export function Header(props: HeaderProps) {
   const { image, name } = props
 
-  const { authenticationStore } = useStores()
-
-  const title = name ?? authenticationStore.user.shortName
-
-  const url = image ?? authenticationStore.user.photo
-
   return (
     <View style={$root}>
       <View style={$container}>
         <View style={$content}>
-          <Avatar preset="small" source={{ uri: url }} />
+          <Avatar preset="small" source={{ uri: image }} />
 
-          <Text text={title} style={$textStyles} />
+          <Text text={name} style={$textStyles} />
         </View>
-
-        <Icon icon="Gear" size={32} onPress={() => {}} />
       </View>
     </View>
   )

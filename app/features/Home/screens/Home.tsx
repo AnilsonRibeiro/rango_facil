@@ -1,15 +1,15 @@
 import React, { FC } from "react"
 import { observer } from "mobx-react-lite"
 import { View, ViewStyle } from "react-native"
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack"
-import { Button, Screen, Title } from "../../../components"
+import { StackScreenProps } from "@react-navigation/stack"
+import { Screen, Title } from "../../../components"
 
 import { AuthenticatedStackParamList } from "../navigation/AuthenticatedNavigator"
-import { useNavigation } from "@react-navigation/native"
-import { useStores } from "../../../models"
+
 import { spacing } from "../../../theme"
 import { Header } from "../components/Header"
 import { Card } from "../components/Card"
+import { useAuthentication } from "../../../hooks/useAuthentication"
 
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../models"
@@ -26,16 +26,7 @@ import { Card } from "../components/Card"
 
 export const HomeScreen: FC<StackScreenProps<AuthenticatedStackParamList, "Home">> = observer(
   function HomeScreen() {
-    // Pull in one of our MST stores
-    const { authenticationStore } = useStores()
-
-    // Pull in navigation via hook
-    const navigation = useNavigation<StackNavigationProp<AuthenticatedStackParamList>>()
-
-    const handleLogout = () => {
-      authenticationStore.logout()
-    }
-
+    const { user } = useAuthentication()
     return (
       <Screen
         style={$root}
@@ -44,13 +35,11 @@ export const HomeScreen: FC<StackScreenProps<AuthenticatedStackParamList, "Home"
         safeAreaEdges={["top", "bottom"]}
       >
         <View style={$content}>
-          <Header />
+          <Header name={user.name} image={user.avatar} />
           <Title text="Categorias" />
 
           <Card text="Café da manhã" icon="Clock" />
         </View>
-
-        <Button text="Logout" preset="outline" onPress={handleLogout} />
       </Screen>
     )
   },
