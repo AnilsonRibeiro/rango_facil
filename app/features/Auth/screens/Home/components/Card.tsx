@@ -1,7 +1,7 @@
 import React from "react"
-import { Icon, IconTypes, Text } from "../../../components"
+import { Icon, IconTypes, Text } from "../../../../../components"
 import { TextStyle, View, ViewStyle } from "react-native"
-import { colors, spacing } from "../../../theme"
+import { colors, spacing } from "../../../../../theme"
 
 interface CardProps {
   text: string
@@ -11,17 +11,13 @@ interface CardProps {
 export function Card(props: CardProps) {
   const { text, icon } = props
   return (
-    <View style={$root}>
+    <View>
       <View style={$container}>
         <Icon icon={icon} size={32} />
       </View>
       <Text text={text} style={$text} />
     </View>
   )
-}
-
-const $root: ViewStyle = {
-  height: 60,
 }
 
 const $container: ViewStyle = {
@@ -31,6 +27,7 @@ const $container: ViewStyle = {
   backgroundColor: colors.palette["neutral300_10%"],
   alignItems: "center",
   justifyContent: "center",
+  marginRight: spacing.medium,
 }
 
 const $text: TextStyle = {

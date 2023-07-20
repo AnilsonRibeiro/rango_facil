@@ -16,3 +16,5 @@ export * from "./Avatar"
 export * from "./TextFieldForEdit"
 export * from "./Tag"
 export * from "./DateField"
+
+export * from "./TabBar"

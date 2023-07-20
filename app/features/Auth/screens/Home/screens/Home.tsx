@@ -1,15 +1,15 @@
 import React, { FC } from "react"
 
-import { View, ViewStyle } from "react-native"
+import { ScrollView, View, ViewStyle } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack"
-import { Button, Icon, Screen, Title } from "../../../components"
+import { Button, Icon, Screen, Title } from "../../../../../components"
 
 import { AuthenticatedStackParamList } from "../navigation/AuthenticatedNavigator"
 
-import { spacing } from "../../../theme"
+import { spacing } from "../../../../../theme"
 import { Header } from "../components/Header"
 import { Card } from "../components/Card"
-import { useAuthentication } from "../../../hooks/useAuthentication"
+import { useAuthentication } from "../../../../../hooks/useAuthentication"
 
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../models"
@@ -35,9 +35,19 @@ export const HomeScreen: FC<StackScreenProps<AuthenticatedStackParamList, "Home"
     >
       <View style={$content}>
         <Header name={user?.name} image={user?.avatar} />
-        <Title text="Categorias" />
 
-        <Card text="Café da manhã" icon="Clock" />
+        <View style={$categoriesWrapper}>
+          <Title text="Categorias" />
+
+          <ScrollView horizontal style={$categories}>
+            <Card text="Café da manhã" icon="Clock" />
+            <Card text="Café da manhã" icon="Clock" />
+            <Card text="Café da manhã" icon="Clock" />
+            <Card text="Café da manhã" icon="Clock" />
+            <Card text="Café da manhã" icon="Clock" />
+            <Card text="Café da manhã" icon="Clock" />
+          </ScrollView>
+        </View>
       </View>
 
       <Button
@@ -66,6 +76,16 @@ const $container: ViewStyle = {
   justifyContent: "center",
   alignItems: "center",
   paddingHorizontal: spacing.large,
+  paddingBottom: 66,
+}
+
+const $categoriesWrapper: ViewStyle = {
+  width: "100%",
+  marginTop: spacing.large,
+}
+
+const $categories: ViewStyle = {
+  marginTop: spacing.medium,
 }
 
 const $buttonIcon: ViewStyle = {

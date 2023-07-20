@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useReducer, useState } from "react"
+import React, { FC, useReducer, useState } from "react"
 import { Alert, View, ViewStyle } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack"
 import { Button, Screen, Avatar, TextFieldForEdit, DateField, Title } from "../../../components"
@@ -16,19 +16,6 @@ import { useGetAllergies } from "../services/hooks/useGetAllergies"
 import { toPascalCase } from "../../../utils/normalize/toPascalCase"
 import { useAuthentication } from "../../../hooks/useAuthentication"
 
-// import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "../models"
-
-// STOP! READ ME FIRST!
-// To fix the TS error below, you'll need to add the following things in your navigation config:
-// - Add `Welcome: undefined` to AppStackParamList
-// - Import your screen, and add it to the stack:
-//     `<Stack.Screen name="Welcome" component={WelcomeScreen} />`
-// Hint: Look for the 🔥!
-
-// REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
-// @ts-ignore
-
 enum ActionsEnum {
   COMPLETED_STEP = "completedStep",
 }
@@ -36,6 +23,26 @@ enum ActionsEnum {
 type ActionsType = {
   type: ActionsEnum
   payload: number
+}
+
+const completedStepReduce = (
+  state: { steps: StepType[]; currentStep: number },
+  action: ActionsType,
+) => {
+  const { type, payload } = action
+
+  switch (type) {
+    case ActionsEnum.COMPLETED_STEP:
+      return {
+        steps: state.steps.map((step, index) => {
+          if (index === payload - 1) {
+            return { ...step, completed: true }
+          }
+          return step
+        }),
+        currentStep: payload,
+      }
+  }
 }
 
 export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "PersonalData">> = () => {
@@ -64,26 +71,6 @@ export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "Person
       console.log(error)
     },
   })
-
-  const completedStepReduce = (
-    state: { steps: StepType[]; currentStep: number },
-    action: ActionsType,
-  ) => {
-    const { type, payload } = action
-
-    switch (type) {
-      case ActionsEnum.COMPLETED_STEP:
-        return {
-          steps: state.steps.map((step, index) => {
-            if (index === payload - 1) {
-              return { ...step, completed: true }
-            }
-            return step
-          }),
-          currentStep: payload,
-        }
-    }
-  }
 
   const [state, dispatch] = useReducer(completedStepReduce, {
     steps: [
@@ -149,8 +136,6 @@ export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "Person
 
   const onChangeDate = (data: Date) => {
     setDateOfBirth(data)
-
-    console.log(new Date(data).toISOString())
   }
 
   const showCategories = state.steps[0].completed
@@ -168,10 +153,6 @@ export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "Person
     return false
   }
 
-  useEffect(() => {
-    console.log(categoriesSelected)
-  }, [categoriesSelected])
-
   return (
     <Screen preset="fixed" safeAreaEdges={["top", "bottom"]} contentContainerStyle={$rootContent}>
       <Progress steps={state.steps} />
@@ -180,14 +161,21 @@ export const PersonalData: FC<StackScreenProps<OnboardingStackParamList, "Person
         <View style={$wrapperAvatar}>
           <Avatar source={{ uri: params?.avatar }} />
           <View style={$wrapperFields}>
-            <TextFieldForEdit value={params.name} placeholder="Nome sobrenome" numberOfLines={1} />
+            <TextFieldForEdit
+              value={params.name}
+              placeholder="Nome e sobrenome"
+              numberOfLines={1}
+            />
             <DateField value={dateOfBirth} onChange={onChangeDate} />
           </View>
         </View>
 
         {showCategories && (
           <Tags
-            data={categories}
+            data={categories?.map((category) => ({
+              id: category.id,
+              name: toPascalCase(category.name),
+            }))}
             isSelect={isSelectFoodOption}
             onPressTag={handlePressFoodOption}
             variant="rectangular"
@@ -232,7 +220,8 @@ const $content: ViewStyle = {
   flex: 1,
 
   justifyContent: "flex-start",
-  paddingTop: "35%",
+
+  paddingTop: "15%",
   paddingHorizontal: spacing.large,
 }
 
@@ -251,12 +240,12 @@ const $wrapperButton: ViewStyle = {
 
 const $overrideScrollViewStyleCategories: ViewStyle = {
   height: 70,
-  marginTop: spacing.huge,
+  marginTop: spacing.large,
 }
 
 const $overrideScrollViewStyleTags: ViewStyle = {
   minHeight: 170,
   height: 170,
 
-  marginTop: spacing.large,
+  marginTop: spacing.huge,
 }

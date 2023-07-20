@@ -1,12 +1,6 @@
-/**
- * The app navigator (formerly "AppNavigator" and "MainNavigator") is used for the primary
- * navigation flows of your app.
- * Generally speaking, it will contain an auth flow (registration, login, forgot password)
- * and a "main" flow which the user will use once logged in.
- */
 import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native"
 import { StackScreenProps, createStackNavigator } from "@react-navigation/stack"
-import { observer } from "mobx-react-lite"
+
 import React from "react"
 import { useColorScheme } from "react-native"
 import Config from "../config"
@@ -15,8 +9,9 @@ import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 
 import { OnboardingStack } from "../features/Onboarding/navigation/OnboardingNavigator"
 import { AuthenticationProvider } from "../context/Authentication"
-import { HomeScreen } from "../features/Home/screens/Home"
+
 import { useAuthentication } from "../hooks/useAuthentication"
+import { AuthenticatedBottomTabNavigator } from "../features/Auth/navigator/AuthenticatedNavigator"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -33,7 +28,7 @@ import { useAuthentication } from "../hooks/useAuthentication"
  */
 
 export type AppStackParamList = {
-  Home: undefined
+  Authenticated: undefined
   Onboarding: undefined
   // 🔥 Your screens go here
 }
@@ -51,7 +46,7 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = StackScreen
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
 const Stack = createStackNavigator<AppStackParamList>()
 
-const AppStack = observer(function AppStack() {
+const AppStack = () => {
   const { user } = useAuthentication()
   // useEffect(() => {
   //   messaging.setupNotificationToken()
@@ -87,11 +82,11 @@ const AppStack = observer(function AppStack() {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName={user ? "Home" : "Onboarding"}
+      initialRouteName={user ? "Authenticated" : "Onboarding"}
     >
       {user ? (
         <Stack.Group>
-          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Authenticated" component={AuthenticatedBottomTabNavigator} />
         </Stack.Group>
       ) : (
         <Stack.Group>
@@ -102,13 +97,13 @@ const AppStack = observer(function AppStack() {
       {/** 🔥 Your screens go here */}
     </Stack.Navigator>
   )
-})
+}
 
 interface NavigationProps extends Partial<React.ComponentProps<typeof NavigationContainer>> {
   hideSplashScreen: () => Promise<void>
 }
 
-export const AppNavigator = observer(function AppNavigator(props: NavigationProps) {
+export const AppNavigator = (props: NavigationProps) => {
   const colorScheme = useColorScheme()
 
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
@@ -124,4 +119,4 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
       </NavigationContainer>
     </AuthenticationProvider>
   )
-})
+}

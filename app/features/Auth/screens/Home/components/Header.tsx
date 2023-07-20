@@ -1,7 +1,7 @@
-import { Avatar, Text } from "../../../components"
+import { Avatar, Icon, Text } from "../../../../../components"
 import React from "react"
 import { TextStyle, View, ViewStyle } from "react-native"
-import { colors, spacing } from "../../../theme"
+import { colors, spacing } from "../../../../../theme"
 
 interface HeaderProps {
   image: string
@@ -19,6 +19,8 @@ export function Header(props: HeaderProps) {
 
           <Text text={name} style={$textStyles} />
         </View>
+
+        <Icon icon="settings" onPress={() => console.log("settings")} />
       </View>
     </View>
   )
