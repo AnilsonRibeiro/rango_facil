@@ -7,7 +7,6 @@
 
 import { createStackNavigator } from "@react-navigation/stack"
 
-import { observer } from "mobx-react-lite"
 import React from "react"
 import { HomeScreen } from "../screens/Home"
 
@@ -31,10 +30,10 @@ export type AuthenticatedStackParamList = {
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
 const { Navigator, Screen } = createStackNavigator<AuthenticatedStackParamList>()
 
-export const AuthenticatedStack = observer(function AuthenticatedStack() {
+export const AuthenticatedStack = () => {
   return (
     <Navigator screenOptions={{ headerShown: false }}>
       <Screen name="Home" component={HomeScreen} />
     </Navigator>
   )
-})
+}

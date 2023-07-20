@@ -7,7 +7,6 @@
 
 import { createStackNavigator } from "@react-navigation/stack"
 
-import { observer } from "mobx-react-lite"
 import React from "react"
 
 import { WelcomeScreen } from "../screens/WelcomeScreen"
@@ -42,7 +41,7 @@ export type OnboardingStackParamList = {
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
 const { Navigator, Screen } = createStackNavigator<OnboardingStackParamList>()
 
-export const OnboardingStack = observer(function OnboardingStack() {
+export const OnboardingStack = () => {
   return (
     <Navigator screenOptions={{ headerShown: false }}>
       <Screen name="Welcome" component={WelcomeScreen} />
@@ -50,4 +49,4 @@ export const OnboardingStack = observer(function OnboardingStack() {
       <Screen name="PersonalData" component={PersonalData} />
     </Navigator>
   )
-})
+}

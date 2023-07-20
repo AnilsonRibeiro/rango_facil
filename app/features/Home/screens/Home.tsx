@@ -1,5 +1,5 @@
 import React, { FC } from "react"
-import { observer } from "mobx-react-lite"
+
 import { View, ViewStyle } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack"
 import { Button, Icon, Screen, Title } from "../../../components"
@@ -24,33 +24,31 @@ import { useAuthentication } from "../../../hooks/useAuthentication"
 // REMOVE ME! ⬇️ This TS ignore will not be necessary after you've added the correct navigator param type
 // @ts-ignore
 
-export const HomeScreen: FC<StackScreenProps<AuthenticatedStackParamList, "Home">> = observer(
-  function HomeScreen() {
-    const { user, logout } = useAuthentication()
-    return (
-      <Screen
-        style={$root}
-        contentContainerStyle={[$container]}
-        preset="fixed"
-        safeAreaEdges={["top", "bottom"]}
-      >
-        <View style={$content}>
-          <Header name={user?.name} image={user?.avatar} />
-          <Title text="Categorias" />
+export const HomeScreen: FC<StackScreenProps<AuthenticatedStackParamList, "Home">> = () => {
+  const { user, logout } = useAuthentication()
+  return (
+    <Screen
+      style={$root}
+      contentContainerStyle={[$container]}
+      preset="fixed"
+      safeAreaEdges={["top", "bottom"]}
+    >
+      <View style={$content}>
+        <Header name={user?.name} image={user?.avatar} />
+        <Title text="Categorias" />
 
-          <Card text="Café da manhã" icon="Clock" />
-        </View>
+        <Card text="Café da manhã" icon="Clock" />
+      </View>
 
-        <Button
-          preset="outline"
-          text="Sair"
-          RightAccessory={() => <Icon icon="SignOut" style={$buttonIcon} />}
-          onPress={logout}
-        />
-      </Screen>
-    )
-  },
-)
+      <Button
+        preset="outline"
+        text="Sair"
+        RightAccessory={() => <Icon icon="SignOut" style={$buttonIcon} />}
+        onPress={logout}
+      />
+    </Screen>
+  )
+}
 
 const $root: ViewStyle = {
   flex: 1,

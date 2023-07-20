@@ -1,5 +1,5 @@
 import React, { FC, memo, useEffect, useState } from "react"
-import { observer } from "mobx-react-lite"
+
 import { ImageBackground, TextStyle, ViewStyle } from "react-native"
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack"
 import { Button, Screen, Text } from "../../../components"
@@ -76,62 +76,60 @@ const WelcomeDescription: FC<{ text: string }> = memo(
   (prevProps, nextProps) => prevProps.text === nextProps.text,
 )
 
-export const WelcomeScreen: FC<StackScreenProps<OnboardingStackParamList, "Welcome">> = observer(
-  function WelcomeScreen() {
-    // Pull in one of our MST stores
-    // const { someStore, anotherStore } = useStores()
+export const WelcomeScreen: FC<StackScreenProps<OnboardingStackParamList, "Welcome">> = () => {
+  // Pull in one of our MST stores
+  // const { someStore, anotherStore } = useStores()
 
-    // Pull in navigation via hook
-    const navigation = useNavigation<StackNavigationProp<OnboardingStackParamList>>()
-    const [currentStep, setCurrentStep] = useState(0)
+  // Pull in navigation via hook
+  const navigation = useNavigation<StackNavigationProp<OnboardingStackParamList>>()
+  const [currentStep, setCurrentStep] = useState(0)
 
-    const handleNextStep = () => {
-      if (currentStep === steps.length - 1) {
-        navigation.replace("SignUp")
-        return
-      }
-      setCurrentStep(currentStep + 1)
+  const handleNextStep = () => {
+    if (currentStep === steps.length - 1) {
+      navigation.replace("SignUp")
+      return
     }
-    const opacity = useSharedValue(1)
+    setCurrentStep(currentStep + 1)
+  }
+  const opacity = useSharedValue(1)
 
-    const screenAnimation = useAnimatedStyle(() => {
-      return {
-        opacity: opacity.value,
-      }
-    })
+  const screenAnimation = useAnimatedStyle(() => {
+    return {
+      opacity: opacity.value,
+    }
+  })
 
-    useEffect(() => {
-      opacity.value = withTiming(
-        0.8,
-        {
-          duration: timing.quick,
-          easing: Easing.linear,
-        },
-        () => (opacity.value = 1),
-      )
-    }, [currentStep])
-
-    return (
-      <ImageBackground source={steps[currentStep].image} resizeMode="cover" style={$image}>
-        <Screen
-          style={$root}
-          contentContainerStyle={[$container]}
-          preset="fixed"
-          backgroundColor={colors.transparent}
-          safeAreaEdges={["bottom"]}
-        >
-          <Animated.View style={[$animatedContainer, screenAnimation]}>
-            <WelcomeTitle text={steps[currentStep].title} />
-            <WelcomeDescription text={steps[currentStep].description} />
-            <ProgressSteps steps={steps} currentStep={currentStep} />
-
-            <Button text="Próximo" onPress={handleNextStep} />
-          </Animated.View>
-        </Screen>
-      </ImageBackground>
+  useEffect(() => {
+    opacity.value = withTiming(
+      0.8,
+      {
+        duration: timing.quick,
+        easing: Easing.linear,
+      },
+      () => (opacity.value = 1),
     )
-  },
-)
+  }, [currentStep])
+
+  return (
+    <ImageBackground source={steps[currentStep].image} resizeMode="cover" style={$image}>
+      <Screen
+        style={$root}
+        contentContainerStyle={[$container]}
+        preset="fixed"
+        backgroundColor={colors.transparent}
+        safeAreaEdges={["bottom"]}
+      >
+        <Animated.View style={[$animatedContainer, screenAnimation]}>
+          <WelcomeTitle text={steps[currentStep].title} />
+          <WelcomeDescription text={steps[currentStep].description} />
+          <ProgressSteps steps={steps} currentStep={currentStep} />
+
+          <Button text="Próximo" onPress={handleNextStep} />
+        </Animated.View>
+      </Screen>
+    </ImageBackground>
+  )
+}
 
 const $root: ViewStyle = {
   flex: 1,

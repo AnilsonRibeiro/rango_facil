@@ -11,8 +11,6 @@ import Animated, {
 import { timing } from "../../../theme"
 import { delay } from "../../../utils/delay"
 
-import { observer } from "mobx-react-lite"
-
 interface TagsProps {
   data: Array<TagType>
   headerComponent?: React.ReactNode
@@ -23,7 +21,7 @@ interface TagsProps {
   variant?: "default" | "rectangular"
 }
 
-export const Tags: FC<TagsProps> = observer(function Tags(props) {
+export const Tags: FC<TagsProps> = (props) => {
   const {
     data,
     headerComponent,
@@ -78,7 +76,7 @@ export const Tags: FC<TagsProps> = observer(function Tags(props) {
       </ScrollView>
     </Animated.View>
   )
-})
+}
 
 const $containerTags: ViewStyle = {
   alignItems: "center",
