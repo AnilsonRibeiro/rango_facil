@@ -2,7 +2,7 @@ import React, { FC } from "react"
 
 import { ScrollView, View, ViewStyle } from "react-native"
 import { StackScreenProps } from "@react-navigation/stack"
-import { Button, Icon, Screen, Title } from "../../../../../components"
+import { Button, Icon, Screen, Title, Card as APPCard } from "../../../../../components"
 
 import { AuthenticatedStackParamList } from "../navigation/AuthenticatedNavigator"
 
@@ -50,6 +50,7 @@ export const HomeScreen: FC<StackScreenProps<AuthenticatedStackParamList, "Home"
         </View>
       </View>
 
+      <APPCard />
       <Button
         preset="outline"
         text="Sair"
