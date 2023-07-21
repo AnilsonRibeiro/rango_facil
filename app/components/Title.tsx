@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { LayoutChangeEvent, View, ViewStyle } from "react-native"
+import { LayoutChangeEvent, View, ViewStyle, Platform } from "react-native"
 import { Text } from "./Text"
 import { colors } from "../theme"
 
@@ -12,21 +12,31 @@ export function Title(props: TitleProps) {
   const [width, setWidth] = useState(0)
 
   const $viewStyle = (width: number) =>
-    ({
-      height: 0,
-      width,
-      borderTopWidth: 2,
-      borderBottomWidth: 2,
-      borderLeftWidth: width,
-      borderStyle: "solid",
+    Platform.OS === "ios"
+      ? ({
+          height: 0,
+          width,
+          borderTopWidth: 2,
+          borderBottomWidth: 2,
+          borderLeftWidth: width,
+          borderStyle: "solid",
 
-      backgroundColor: colors.transparent,
-      borderTopColor: colors.transparent,
-      borderBottomColor: colors.transparent,
-      borderLeftColor: colors.palette.primary300,
+          backgroundColor: colors.transparent,
+          borderTopColor: colors.transparent,
+          borderBottomColor: colors.transparent,
+          borderLeftColor: colors.palette.primary300,
 
-      borderRadius: 9999,
-    } as ViewStyle)
+          borderRadius: 9999,
+        } as ViewStyle)
+      : ({
+          height: 0,
+          width,
+          borderBottomWidth: 2,
+          borderLeftWidth: width,
+          borderStyle: "solid",
+          borderLeftColor: colors.palette.primary300,
+          borderRadius: 9999,
+        } as ViewStyle)
 
   const getWidth = (e: LayoutChangeEvent) => {
     setWidth(e.nativeEvent.layout.width)
