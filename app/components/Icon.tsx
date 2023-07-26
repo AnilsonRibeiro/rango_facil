@@ -28,9 +28,11 @@ import PeixeSVG from "../../assets/icons/svgs/peixe.svg"
 import SalsaSVG from "../../assets/icons/svgs/salsa.svg"
 import SojaSVG from "../../assets/icons/svgs/soja.svg"
 import SulfatoSVG from "../../assets/icons/svgs/sulfato.svg"
+import EditSVG from "../../assets/icons/svgs/edit.svg"
+import HeartSVG from "../../assets/icons/svgs/heart.svg"
+
 import { SvgProps } from "react-native-svg"
 
-import * as PhosphorIconsSVG from "phosphor-react-native"
 import { colors } from "../theme"
 
 export type IconTypes = keyof typeof iconRegistry
@@ -126,7 +128,6 @@ export const iconRegistry = {
   components: require("../../assets/icons/components.png"),
   debug: require("../../assets/icons/debug.png"),
   github: require("../../assets/icons/github.png"),
-  heart: require("../../assets/icons/heart.png"),
   hidden: require("../../assets/icons/hidden.png"),
   ladybug: require("../../assets/icons/ladybug.png"),
   lock: require("../../assets/icons/lock.png"),
@@ -160,6 +161,10 @@ export const iconRegistry = {
   // soja: require("../../assets/icons/soja.png"),
   // sulfato: require("../../assets/icons/sulfato.png"),
 
+  // application
+  edit: EditSVG,
+  heart: HeartSVG,
+
   milho: MilhoSVG,
   amendoim: AmendoinSVG,
   cogumelo: CogumeloSVG,
@@ -177,7 +182,6 @@ export const iconRegistry = {
   salsa: SalsaSVG,
   soja: SojaSVG,
   sulfato: SulfatoSVG,
-  ...PhosphorIconsSVG,
 }
 
 const $imageStyle: ImageStyle = {

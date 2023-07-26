@@ -37,7 +37,7 @@ export const Base: ForwardRefRenderFunction<TextInput, TextFieldForEditProps> = 
         placeholderTextColor={colors.palette.neutral100}
       />
 
-      <Icon icon="pen" size={24} onPress={handleToggleEdit} />
+      <Icon icon="edit" size={24} onPress={handleToggleEdit} />
     </View>
   )
 }
