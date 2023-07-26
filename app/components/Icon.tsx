@@ -195,6 +195,19 @@ export const iconRegistry = {
   salsa: SalsaSVG,
   soja: SojaSVG,
   sulfato: SulfatoSVG,
+  arrow: ArrowSVG,
+  arrows: ArrowsSVG,
+  bookLegalLaw: BookLegalLawSVG,
+  bread: BreadSVG,
+  clockTimeMenu: ClockTimeMenuSVG,
+  clockTime: ClockTimeSVG,
+  coffeeCup: CoffeeCupSVG,
+  jellyCake: JellyCakeSVG,
+  nivel: NivelSVG,
+  restaurant: RestaurantSVG,
+  turkey: TurkeySVG,
+  userGroup: UserGroupSVG,
+  weightDiet: WeightDietSVG,
 }
 
 const $imageStyle: ImageStyle = {
